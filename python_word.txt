@@ -1,0 +1,32 @@
+﻿enumerate	
+vt.	列举，枚举，数;
+
+
+intersection
+英 [ˌɪntəˈsekʃn]   美 [ˌɪntərˈsekʃn]
+n.
+横断，横切;交叉，相交;交叉点，交叉线;[数]交集
+
+
+symmetric
+英 [sɪ'metrɪk]   美 [sɪ'metrɪk]  
+adj.
+相称性的，均衡的
+
+
+decorator	英[ˈdekəreɪtə(r)]
+美[ˈdɛkəˌretɚ]
+n.	室内装饰师，油漆匠;
+adj.	适于室内装饰的;
+
+
+
+yield	英[ji:ld]
+美[jild]
+vt.	屈服，投降; 生产; 获利; 不再反对;
+vi.	放弃，屈服; 生利; 退让，退位;
+n.	产量，产额; 投资的收益; 屈服，击穿; 产品;
+
+
+encapsulation
+n.	封装，包封，密封，包围，包囊，胶囊包，灌封，封铸，密封，封结，封装，胶囊化，吸器包囊，人工卵;
