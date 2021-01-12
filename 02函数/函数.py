@@ -44,3 +44,26 @@
 # fun(east='东山钱王', south='南海财神', west = '湖西银童', north = '漠北富婆')
 # {'east': '东山钱王', 'south': '南海财神', 'west': '湖西银童', 'north': '漠北富婆'}
 # 动态关键字参数接收的是一个字典类型的参数
+
+#print(globals())  # 获取全局作用域（内置，全局）中的所有名字
+#print(locals())  # 查看当前作用域中所有的名字
+
+# a = 10
+# def func():
+#     # a = 20 # 在自己的作用域中使用的a。是全新的变量a
+#     global a # 使用全局变量（51行）中的a
+#     a = a + 10
+#     print(a)
+# func()
+# print(a)
+
+
+def func1():
+    a = 10
+    def func2():
+        nonlocal a # 找局部作用域中最近的那个变量， 这里是引入第62行的a
+        a = 20
+        print(a)
+    func2()
+    print(a)
+func1()
