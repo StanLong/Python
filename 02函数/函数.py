@@ -58,12 +58,50 @@
 # print(a)
 
 
-def func1():
-    a = 10
-    def func2():
-        nonlocal a # 找局部作用域中最近的那个变量， 这里是引入第62行的a
-        a = 20
-        print(a)
-    func2()
-    print(a)
-func1()
+# def func1():
+#     a = 10
+#     def func2():
+#         nonlocal a # 找局部作用域中最近的那个变量， 这里是引入第62行的a
+#         a = 20
+#         print(a)
+#     func2()
+#     print(a)
+# func1()
+
+# 函数名的使用
+# def func():
+#     print("聚宝盆")
+# print(func) #  <function func at 0x000001D04B9703A8> 函数内存地址
+# a = func
+# print(a)
+# # <function func at 0x000001D04B9703A8>
+# func()
+# # 聚宝盆
+# a()  # 现在a表示一个函数的调用
+# # 聚宝盆
+
+# 函数名的使用作为list元素
+# def fun1():
+#     print("无息币，务完物")
+# def fun2():
+#     print("贵出如粪土，贱取如珠玉")
+# lst = [fun1, fun2]
+# for f in lst:
+#     f()
+#无息币，务完物
+#贵出如粪土，贱取如珠玉
+
+# 函数名作为参数
+# def func(fn):
+#     fn()
+# def gn():
+#     print("年轻人，想要做成大事，一定要学会等待")
+# func(gn) # 函数名作为参数传给另一个函数
+
+# 函数名作为返回值
+# def func():
+#     def inner():
+#         print("辨贵贱，调余缺，度远近")
+#     return inner
+# ret = func() # 这里func() 执行之后获得的是inner函数的内存地址
+# ret()
