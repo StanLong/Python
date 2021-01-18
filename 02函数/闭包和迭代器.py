@@ -26,8 +26,8 @@ lst = ['沈万三', '刘伯温', '朱元璋']
 # print(it.__next__()) # 使用 __next__ 从迭代器里往外拿元素
 # print(it.__next__()) # 使用 __next__ 从迭代器里往外拿元素 # 迭代到最后一个元素在继续迭代的话就报错了 StopIteration
 
-from collections import Iterable
-from collections import Iterator
+from collections.abc import Iterable
+from collections.abc import Iterator
 
 print(isinstance(lst, Iterable)) # True 可迭代的
 print(isinstance(lst, Iterator)) # False # 不是迭代器
