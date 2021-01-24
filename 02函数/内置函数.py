@@ -50,5 +50,11 @@
 # a
 
 # format 与具体数据有关，用于计算各种小数，精算等
-print(format(10, 'b')) # 二进制
+# print(format(10, 'b')) # 二进制
 # 1010
+
+# divmod 求商和余数
+# print(divmod(7,3))
+
+# pow(a,b,c) 求a的b次幂，如果有三个参数，则求完次幂后对第三个数取余
+print(pow(2,2,3))
