@@ -48,18 +48,3 @@
 #         break
 # else:
 #     print("不存在")
-
-# 递归 不纠结了
-# target = 3 # 要查找的数据
-# lst = [0,2,3,4,5,6,7,8,9]
-# def binary_search(left, right, n):
-#     middle = (left + right) // 2
-#     print(middle)
-#     if n > lst[middle]:
-#         left = lst[middle]
-#     elif n < lst[middle]:
-#         right = lst[middle]
-#     else:
-#         return lst[middle]
-#     binary_search(left, right, n) # 开始递归
-# binary_search(0, len(lst), 1)
