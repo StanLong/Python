@@ -57,4 +57,34 @@
 # print(divmod(7,3))
 
 # pow(a,b,c) 求a的b次幂，如果有三个参数，则求完次幂后对第三个数取余
-print(pow(2,2,3))
+# print(pow(2,2,3))
+
+# isinstance()函数
+# 判断一个对象是否是一个已知的类型，返回布尔值。类似 type()
+# 但是：
+# type() 不会认为子类是一种父类类型，不考虑继承关系。  　　
+# isinstance() 会认为子类是一种父类类型，考虑继承关系。  　　
+# 如果要判断两个类型是否相同推荐使用 isinstance()
+# class A:
+#     pass
+#
+# class B(A):
+#     pass
+#
+# print(isinstance(A(),A))    # True
+# print( type(A()) == A )     # True
+#
+# print(isinstance(B(),A))    # True
+# print( type(B()) == A )     # False   --type()不考虑继承关系
+
+# issubclass() 函数
+# 用于判断参数class是否是类型参数classinfo的子类，是则返回True，否则返回False
+# class A:
+#     pass
+# class B(A):     # B继承了A，即B是A的子类
+#     pass
+#
+# print(issubclass(A,B))    # 判断 A 是 B 的子类？
+# # False
+# print(issubclass(B,A))    # 判断 B 是 A 的子类？
+# # True
