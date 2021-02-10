@@ -1,4 +1,4 @@
-# 继承：子类获得了父类的全部属性及功能
+# 继承：子类获得了父类的全部属性及功能,但是不能获得父类的私有属性
 
 # class Person(object):
 #     def __init__(self,name,sex):
