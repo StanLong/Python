@@ -1,4 +1,5 @@
 # 内置方法
+# 内置方法一般不会直接调用，会用特殊的操作来触发
 # __call__
 # class A:
 #     def __call__(self, *args, **kwargs):
