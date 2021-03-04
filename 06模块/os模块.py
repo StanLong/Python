@@ -1,5 +1,5 @@
 import os
-print(os.getcwd()) # 当前文件的工作路径
+# print(os.getcwd()) # 当前文件的工作路径
 # D:\StanLong\git_repository\Python\06模块
 # os.chdir('D:\StanLong\git_repository\Python\06模块') # 手动改变文件的工作路径
 # os.mkdir('dira') # 在当前路径创建单极目录
@@ -24,3 +24,26 @@ print(os.getcwd()) # 当前文件的工作路径
 # 当查看执行结果时， 使用 os.popen()
 
 # print(os.environ) # 查看环境变量
+
+print(os.path.abspath('os模块.py')) # 规范化路径
+# D:\StanLong\git_repository\Python\06模块\os模块.py
+print([os.path.abspath('os模块.py')])
+# ['D:\\StanLong\\git_repository\\Python\\06模块\\os模块.py']
+print(os.path.split('D:\StanLong\git_repository\Python\06模块\os模块.py')) # 将path分隔成目录和文件名，返回一个二元的元组
+# ('D:\\StanLong\\git_repository\\Python\x06模块', 'os模块.py')
+print(os.path.dirname('D:\StanLong\git_repository\Python\06模块\os模块.py')) #  返回os.path.split值的第一个元素
+# D:\StanLong\git_repository\Python模块
+print(os.path.basename('D:\StanLong\git_repository\Python\06模块\os模块.py')) # 返回os.path.split 值的第二个元素
+# os模块.py
+print(os.path.exists(r'D:\StanLong\git_repository\Python\06模块\os模块.py')) # 判断路径是否存在
+# True
+print(os.path.isfile(r'D:\StanLong\git_repository\Python\06模块\os模块.py')) # 判断path是否是一个文件
+# True
+print(os.path.isdir(r'D:\StanLong\git_repository\Python\06模块')) # 判断path是否是一个目录
+# True
+
+print(os.path.join(r'D:\StanLong\git_repository\Python\06模块', 'aaa', 'bbb')) # 拼接目录
+# D:\StanLong\git_repository\Python\06模块\aaa\bbb
+
+print(os.path.getsize(r'D:\StanLong\git_repository\Python\06模块\os模块.py')) # 查看文件的大小，目录的大小都是4096
+# 2542
