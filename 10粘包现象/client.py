@@ -1,0 +1,46 @@
+# 基于TCP实现远程执行命令
+# server端下发命令
+# import socket
+# import subprocess
+# sk = socket.socket()
+# ip_port = ('127.0.0.1', 8080)
+# sk.connect(ip_port)
+#
+# while True:
+#     cmd = sk.recv(1024).decode('gbk')
+#
+#     result = subprocess.Popen(cmd,
+#                               shell=True,
+#                               stdout=subprocess.PIPE,
+#                               stderr= subprocess.PIPE)
+#
+#     sk.send(result.stdout.read())
+#     sk.send(result.stderr.read())
+#
+# sk.close()
+
+# 基于UDP实现远程执行命令
+
+import socket
+import subprocess
+
+sk = socket.socket(type=socket.SOCK_DGRAM)
+ip_port = ('127.0.0.1', 8080)
+
+sk.sendto('Hello'.encode('utf-8'), ip_port)
+
+while True:
+    cmd = sk.recv(10240).decode('utf-8')
+    print(cmd)
+    result = subprocess.Popen(cmd,
+                              shell=True,
+                              stdout=subprocess.PIPE,
+                              stderr= subprocess.PIPE)
+
+    # sk.send(result.stdout.read())
+    # sk.send(result.stderr.read())
+    std_out = 'stdout :' + (result.stdout.read()).decode('gbk')
+    std_err = 'stderr :' + (result.stderr.read()).decode('gbk')
+    sk.sendto(std_out.encode('utf-8'), ip_port)
+    sk.sendto(std_err.encode('utf-8'), ip_port)
+sk.close()
