@@ -30,7 +30,9 @@ ip_port = ('127.0.0.1', 8080)
 sk.sendto('Hello'.encode('utf-8'), ip_port)
 
 while True:
-    cmd = sk.recv(10240).decode('utf-8')
+    # cmd = sk.recv(10240).decode('utf-8')
+    cmd, addr = sk.recvfrom(1024)
+    cmd = cmd.decode('utf-8')
     print(cmd)
     result = subprocess.Popen(cmd,
                               shell=True,
@@ -39,8 +41,11 @@ while True:
 
     # sk.send(result.stdout.read())
     # sk.send(result.stderr.read())
-    std_out = 'stdout :' + (result.stdout.read()).decode('gbk')
     std_err = 'stderr :' + (result.stderr.read()).decode('gbk')
-    sk.sendto(std_out.encode('utf-8'), ip_port)
-    sk.sendto(std_err.encode('utf-8'), ip_port)
+    std_out = 'stdout :' + (result.stdout.read()).decode('gbk')
+    if len(std_out) == 8:
+        sk.sendto(std_err.encode('utf-8'), ip_port)
+    else:
+        sk.sendto(std_out.encode('utf-8'), ip_port)
+
 sk.close()
