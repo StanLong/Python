@@ -53,7 +53,43 @@
 # 客户端直接返回信息的长度
 # 优点: 确定了接收多大的数据
 # 缺点：多了一次交互
+# import socket
+# sk = socket.socket()
+# ip_port = ('127.0.0.1', 8080)
+# sk.bind(ip_port)
+# sk.listen()
+#
+# conn, addr = sk.accept()
+#
+# while True:
+#     cmd = input('>>')
+#     conn.send(cmd.encode('gbk'))
+#     num = conn.recv(1024).decode('utf-8')
+#     msg = conn.recv(int(num)).decode('gbk')
+#     print(msg)
+#
+# conn.close()
+# sk.close()
+
+
+
+# struct 模块可以把一个类型如数字，字符串转换成一个固定类型的bytes
+# struct 打包与解包
+# import struct
+# result = struct.pack('i', 4096) # pack打包 i 代表int，这行代码的意思是把一个int类型值转换成4个bytes
+# print(result)
+# # b'\x00\x10\x00\x00'
+#
+# num = struct.unpack('i', result) # unpack 解包
+# print(num)
+# # (4096,)
+# print(num[0])
+# # 4096
+
+
+# struct 模块解决黏包问题
 import socket
+import struct
 sk = socket.socket()
 ip_port = ('127.0.0.1', 8080)
 sk.bind(ip_port)
@@ -64,7 +100,8 @@ conn, addr = sk.accept()
 while True:
     cmd = input('>>')
     conn.send(cmd.encode('gbk'))
-    num = conn.recv(1024).decode('utf-8')
+    num = conn.recv(1024)
+    num = struct.unpack("i", num)[0]
     msg = conn.recv(int(num)).decode('gbk')
     print(msg)
 

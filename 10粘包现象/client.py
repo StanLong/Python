@@ -54,7 +54,33 @@
 # 解决黏包方式一
 # 客户端直接返回信息的长度
 
+# import socket
+# import subprocess
+# sk = socket.socket()
+# ip_port = ('127.0.0.1', 8080)
+# sk.connect(ip_port)
+#
+# while True:
+#     cmd = sk.recv(1024).decode('gbk')
+#
+#     result = subprocess.Popen(cmd,
+#                               shell=True,
+#                               stdout=subprocess.PIPE,
+#                               stderr= subprocess.PIPE)
+#
+#     std_out = result.stdout.read()
+#     std_err = result.stderr.read()
+#     sk.send(str(len(std_out) + len(std_err)).encode('utf-8'))
+#     sk.send(std_out)
+#     sk.send(std_err)
+#
+# sk.close()
+
+
+
+# struct 模块解决黏包问题
 import socket
+import struct
 import subprocess
 sk = socket.socket()
 ip_port = ('127.0.0.1', 8080)
@@ -70,7 +96,9 @@ while True:
 
     std_out = result.stdout.read()
     std_err = result.stderr.read()
-    sk.send(str(len(std_out) + len(std_err)).encode('utf-8'))
+    len_num = len(std_out) + len(std_err)
+    num_by = struct.pack("i", len_num)
+    sk.send(num_by)
     sk.send(std_out)
     sk.send(std_err)
 
