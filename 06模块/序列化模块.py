@@ -18,6 +18,9 @@
     # dump/dunmps的结果是byte， dump用的f文件句柄需要以wb的模式打开，load加载文件需要用rb模式打开
     # 对于对象序列化，需要对象对应的类再内存中
 
+# shelve
+    # 用的不多，不记录了
+
 # json
 import json
 
