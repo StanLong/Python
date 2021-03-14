@@ -50,5 +50,5 @@ class GetPhotoInfo:
 
 
 if __name__ == '__main__':
-    Main = GetPhotoInfo('7.jpg')
+    Main = GetPhotoInfo('8.jpg')
     Main.get_location()

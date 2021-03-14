@@ -9,6 +9,8 @@
     # 支持元组作为value，但是不支持元组作为key
     # set 不能被 dump/dumps
     # 操作json文件的时候用dump/load
+    # dumps是将dict转化成str格式，loads是将str转化成dict格式。
+    # dump和load也是类似的功能，只是与文件操作结合起来了
 # pickle
     # 可以支持所有数据类型，但是不能跨语言
     # 不会修改数据
