@@ -29,13 +29,14 @@ with open(head['filename'], 'wb') as f:
             content = conn.recv(buffer)
             f.write(content)
             filesize = filesize - buffer
-            # TODO
             # 实现下载进度条展示功能
+            print('\r下载进度 %.2f%%' %((head['filesize']-filesize)/head['filesize']*100), end='') # \r表示回车但是不换行，利用这个原理进行百分比的刷新
+            f.flush()
         else:
             content = conn.recv(buffer)
             f.write(content)
             break
-print('传输完成')
+print('\n', '传输完成')
 conn.close()
 sk.close()
 
