@@ -1,6 +1,6 @@
 # FTP作业
 
-## 要求：
+## 作业要求
 
 1. 用户加密认证
 2. 允许同时多用户登录
@@ -10,41 +10,61 @@
 6. 允许用户查看当前目录下文件
 7. 允许上传和下载文件，保证文件一致性
 8. 文件传输过程中显示进度条
-9. 附加功能：支持文件的断点续传
+9. 可以删除文件
+10. 附加功能：支持文件的断点续传
 
 ## FTP流程图
 
 ![](./01.png)
 
+## 目录结构
+
+![](./02.png)
+
 ## 服务器端
 
 服务器端主要是处于长期运行监控状态。在调用启动之后，即无需再次操作。
 
-**Bin文件夹**：主要是放置的服务器启动文件，运行该文件夹下的start文件即可启动服务器
+**bin文件夹**：主要是放置的服务器启动文件，运行该文件夹下的start文件即可启动服务器
 
-**Core文件夹**：主要存放服务器程序的核心部分，涉及文件的作用如下：
+```python
+import os
+import sys
+import socketserver
+base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(base_path)
+
+
+from data.conf.configure import Host,Port
+from core.heart import MyTCPHandler
+
+if __name__ == '__main__':
+    try:
+        server = socketserver.ThreadingTCPServer((Host, Port), MyTCPHandler)
+        print("Server is Running".center(50, "-"))
+        print("Server地址：%s，端口号：%s".center(32, " ") % (Host, Port))
+        server.serve_forever()
+    except:
+        print("当前server所需端口已被占用,请检查！")
+```
+
+**core文件夹**：主要存放服务器程序的核心部分，涉及文件的作用如下：
 
 ​       heart.py  主要是服务器与终端的连接方式设定，内部设有相应功能模块
 
 ​       Record.py  此文件是设定的服务器log日志显示和存储的形式
 
-**Data文件夹**：主要是存放数据，涉及的文件夹和文件作用如下：
+**data文件夹**：主要是存放数据，涉及的文件夹和文件作用如下：
 
-Conf文件夹：存放configure.py文件，此文件作用是默认参数配置，默认内容如下图：
+**conf文件夹：**存放configure.py文件，此文件作用是默认参数配置.此处存放有当前服务器监控的地址和端口，可更改此处来实现实际需要。另一个较为重要的是管理员的账号和密码，此程序暂不支持更改管理员账号和密码，但管理员账号和密码是由管理员程序使用的，普通用户程序使用无效。
 
-此处存放有当前服务器监控的地址和端口，可更改此处来实现实际需要。
+**docs文件夹：**此文件夹主要存放的是客户上传到服务器的文件，存放的原则是按照用户名来创建相应的文件夹。
 
-另一个较为重要的是管理员的账号和密码，此程序暂不支持更改管理员账号和密码，但管理员账号和密码是由管理员程序使用的，普通用户程序使用无效。
+**log文件夹**：此文件夹下存放的是系统日志，系统运行之后会按照日期生成对应的日志文件，文件名形式为：年-月-日.txt
 
-**Docs****文件夹**：此文件夹主要存放的是客户上传到服务器的文件，存放的原则是按照用户名来创建相应的文件夹。
+**users文件夹**：此文件夹下存在两个文件，一个是Quota.txt，存放的是用户当前允许使用的配额。一个是UserAuth.txt，存放的是注册用户的信息。
 
-**Log文件夹**：此文件夹下存放的是系统日志，系统运行之后会按照日期生成对应的日志文件，文件名形式为：年-月-日.txt
-
-**Users文件夹**：此文件夹下存在两个文件，一个是Quota.txt，存放的是用户当前允许使用的配额。一个是UserAuth.txt，存放的是注册用户的信息。
-
- 
-
-## 客户端：
+## 客户端
 
  客户端部分涉及到的是MiniClient，此文件夹下主要是有Bin和Core两个文件夹组成。
 
@@ -52,11 +72,26 @@ Bin文件夹下放置程序开始的文件Start.py；Core文件夹下放置程�
 
 功能：
 
-### 管理端
+## 管理端
 
 管理端部分涉及到的是MiniAdmin，此文件夹下主要是有Bin和Core两个文件夹组成。
 
-Bin文件夹下放置程序开始的文件start.py；Core文件夹下放置程序的核心文件ACore.py
+Bin文件夹下放置程序开始的文件start.py；
+
+```python
+import os
+import sys
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(base_dir)
+
+from core.acore import Manager
+
+if __name__ == '__main__':
+    StartLink = Manager()
+    StartLink.link_server()
+```
+
+Core文件夹下放置程序的核心文件acore.py
 
 1、 注册用户
 
@@ -81,3 +116,6 @@ Bin文件夹下放置程序开始的文件start.py；Core文件夹下放置程�
  
 
 目前不支持管理员更改自身的用户名和密码。
+
+
+
