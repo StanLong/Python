@@ -15,17 +15,17 @@
 
 ## FTP流程图
 
-![](./01.png)
+![](./doc/01.png)
 
 ## 目录结构
 
-![](./02.png)
+![](./doc/02.png)
 
 ## 服务器端
 
 服务器端主要是处于长期运行监控状态。在调用启动之后，即无需再次操作。
 
-**bin文件夹**：主要是放置的服务器启动文件，运行该文件夹下的start文件即可启动服务器
+**bin文件夹**：主要是放置的服务器启动文件，运行该文件夹下的 start.py 即可启动服务器
 
 ```python
 import os
@@ -50,9 +50,40 @@ if __name__ == '__main__':
 
 **core文件夹**：主要存放服务器程序的核心部分，涉及文件的作用如下：
 
-​       heart.py  主要是服务器与终端的连接方式设定，内部设有相应功能模块
+- heart.py  主要是服务器与终端的连接方式设定，内部设有相应功能模块
 
-​       Record.py  此文件是设定的服务器log日志显示和存储的形式
+
+- record.py  此文件是设定的服务器log日志显示和存储的形式
+
+```python
+import logging
+
+def record(filename):
+    # 1.创建一个logger对象
+    logger = logging.getLogger() #创建一个logger对象
+    logger.setLevel(logging.INFO)
+
+    # 2.创建一个屏幕管理操作符
+    sh = logging.StreamHandler()
+    sh.setLevel(logging.INFO)
+
+    # 3.创建一个文件管理操作符
+    fh = logging.FileHandler(filename)
+    fh.setLevel(logging.INFO)
+
+    # 4.创建一个日志输出格式
+    formater = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+    #5.操作符绑定日志格式
+    sh.setFormatter(formater)
+    fh.setFormatter(formater)
+
+    # 6.绑定文件和屏幕管理操作符
+    logger.addHandler(sh)
+    logger.addHandler(fh)
+
+    return logger
+```
 
 **data文件夹**：主要是存放数据，涉及的文件夹和文件作用如下：
 

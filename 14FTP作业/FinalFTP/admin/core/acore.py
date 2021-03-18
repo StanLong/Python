@@ -1,4 +1,6 @@
 import re
+import os
+import json
 import socket
 import hashlib
 
@@ -29,4 +31,14 @@ class Manager:
         self.admin=input("管理员账号:")
         password = input("密码:")
         crypto_password = hashlib.md5(password.encode('utf-8'))
-        print(crypto_password.hexdigest())
+        ##########此处是用来获取本机当前正在使用的地址####################
+        ipaddr = [a for a in os.popen('route print').readlines() if ' 0.0.0.0 ' in a][0].split()[-2]
+        ##################################################################
+        auth_msg = {
+            'type':'auth',
+            'ipaddr':ipaddr,
+            'username':self.admin,
+            'password':crypto_password,
+            'auth_tag':'mgr'
+        }
+        self.sock.send(json.dumps(auth_msg).encode('utf-8'))
