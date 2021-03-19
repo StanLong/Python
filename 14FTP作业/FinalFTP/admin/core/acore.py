@@ -7,6 +7,10 @@ import hashlib
 pattern = re.compile("^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}$")
 
 class Manager:
+
+    '''
+    # 连接服务器
+    '''
     def link_server(self):
         while True:
             print("欢迎登录FinalFTP管理系统".center(50, '-'))
@@ -23,7 +27,9 @@ class Manager:
                     while True:
                         auth_res = self.__AuthenticationName()
                         pass
-
+    '''
+    # 登录服务器，服务器端认证用户名和密码
+    '''
     def __AuthenticationName(self):
         self.sock = socket.socket()
         self.sock.connect((self.server_ip, int(self.server_port)))
@@ -47,7 +53,14 @@ class Manager:
         if rec_msg.get('standcode') == 101:
             print(rec_msg.get('standmsg'))
             print(('%s, 欢迎进入FinalFTP管理界面' %self.username).center(50,'-'))
+        elif rec_msg.get('standcode') == 102 or rec_msg.get('standcode') == 100:
+            return rec_msg
+        else:
+            return rec_msg
 
+    '''
+    # 从服务起端接收消息
+    '''
     def __recvmsg(self):
         data = self.sock.recv(1024)
         data = json.loads(data.decode('utf-8'))

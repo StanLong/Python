@@ -5,6 +5,9 @@ sys.path.append(base_dir)
 
 from core.acore import Manager
 
+'''
+# 管理端入口程序
+'''
 if __name__ == '__main__':
     StartLink = Manager()
     StartLink.link_server()

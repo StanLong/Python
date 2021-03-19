@@ -8,6 +8,9 @@ sys.path.append(base_path)
 from data.conf.configure import Host,Port
 from core.heart import MyTCPHandler
 
+'''
+# 服务端入口程序
+'''
 if __name__ == '__main__':
     try:
         server = socketserver.ThreadingTCPServer((Host, Port), MyTCPHandler)
