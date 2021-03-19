@@ -7,7 +7,9 @@ HomeDocs="%s\\Docs"%ServerData
 #最终定位到MiniServer\Data\Docs
 
 
-
+#管理员账号
+username="admin"
+password="admin"
 
 
 ###################################
