@@ -52,6 +52,11 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             passwd_value = m.hexdigest()
             if self.username == username and self.md5_password == passwd_value:
                 self.__sendmsg(101, data = 'True')
+                logger.info("用户 %s 从终端 %s 登录成功！" % (self.username, self.ipaddr))
+                try:
+                    self.__mgr()
+                except:
+                    logger.info("%s的管理员已断开连接。" % self.ipaddr)
             else:
                 self.__sendmsg(100)
 
@@ -65,6 +70,43 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             'data':data
         }
         self.request.send(json.dumps(sendmsg).encode())
+
+    '''
+    # 此为管理员相关功能的函数，不涉及FTP自身的功能
+    '''
+    def __mgr(self):
+        while True:
+            msg='''
+                    1.注册用户
+                    2.删除用户
+                    3.查看用户
+                    4.修改配额
+                    5.退出
+                    '''
+            self.__sendmsg(102,data=msg)
+            ret_msg = self.__recvmsg()
+            if ret_msg=="1" or ret_msg=="注册用户":
+                wr_tag = False
+                self.__sendmsg(400)
+                sign_msg = self.__recvmsg()
+                username = sign_msg.get("username")
+                password = sign_msg.get("password")
+                quotavalue = sign_msg.get("quotavalue")
+                if os.path.exists(base_dir + "\\data\\users\\UserAuth.txt"):
+                    with open(Base_dir + "\\data\\users\\UserAuth.txt", "r") as f_read:
+                        for line in f_read:
+                            usr, pad = line.strip('"').split(":")
+                            if usr == username:
+                                wr_tag = True
+                                pass
+
+    '''
+    # 服务端接受客户端发送过来数据的
+    '''
+    def __recvmsg(self):
+        Rsg_source=self.request.recv(1024)
+        Rsg=json.loads(Rsg_source.decode())
+        return Rsg
 
     def finish(self):
         print("finish")

@@ -1,1 +1,2 @@
 "zhangsan:50"
+"lisi:30"
