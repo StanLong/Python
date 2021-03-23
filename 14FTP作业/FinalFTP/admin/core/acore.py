@@ -121,14 +121,61 @@ class Manager:
                         continue
 
     def __admin_add(self):
-        reg_user = input("注册的用户名：").strip()
-        reg_passwd = input("注册的密码:").strip()
-        reg_passwd = (hashlib.md5(reg_passwd.encode("utf-8"))).hexdigest()
-        ret_msg = {
-            "username": reg_user,
-            "password": reg_passwd,
-            "quotavalue": "30"
+        reg_user=input("注册的用户名：").strip()
+        reg_passwd=input("注册的密码:").strip()
+        reg_passwd=(hashlib.md5(reg_passwd.encode("utf-8"))).hexdigest()
+        ret_msg={
+            "username":reg_user,
+            "password":reg_passwd,
+            "quotavalue":"30"
         }
         self.sock.send(json.dumps(ret_msg).encode())
-        tag = self.__recvmsg()
-        print(str(tag.get("standcode")) + ":" + tag.get("standmsg"))
+        tag=self.__recvmsg()
+        print(str(tag.get("standcode"))+":"+tag.get("standmsg"))
+
+
+
+    def __admin_delete(self):
+        del_name=input("要删除的用户名：")
+        self.sock.send(json.dumps(del_name).encode())
+        tag=self.__recvmsg()
+        print(str(tag.get("standcode"))+":"+tag.get("standmsg"))
+
+
+
+    def __skmsg(self,ret_slt):
+        seek_list=ret_slt.get("data")
+        if seek_list is not None:
+            if len(seek_list)!=0:
+                for item in seek_list:
+                    try:
+                        skuser,skvalue=item.strip("\n").strip('"').split(":")
+                        print("用户名：%s，当前服务器空间限额：%sM"%(skuser,skvalue))
+                    except:
+                        break
+        else:
+            print("当前尚未存在用户")
+    def __cgmsg(self):
+        while True:
+            qtname=input("用户名:")
+            qtvalue=input("修改后的配额值：")
+            if qtvalue.isdigit():
+                qtmsg={
+                    "name":qtname,
+                    "value":qtvalue
+                }
+                self.sock.send(json.dumps(qtmsg).encode())
+                qt_res=self.__recvmsg()
+                if qt_res.get("standcode")==411:
+                    print("修改成功！")
+                    break
+                else:
+                    print("修改失败！")
+                    break
+            else:
+                print("输入的配额值必须是数字！")
+    def __admin_exit(self):
+        self.sock.shutdown(2)
+        self.sock.close()
+        print("欢迎使用，再见".center(50,"-"))
+        exit()
