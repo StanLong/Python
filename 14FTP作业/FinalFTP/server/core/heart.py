@@ -97,8 +97,8 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
                 username=sign_msg.get("username")
                 password=sign_msg.get("password")
                 quotavalue=sign_msg.get("quotavalue")
-                if os.path.exists(Base_dir+"\\Data\\Users\\UserAuth.txt"):
-                    with open(Base_dir+"\\Data\\Users\\UserAuth.txt","r") as f_read:
+                if os.path.exists(base_dir+"\\data\\users\\UserAuth.txt"):
+                    with open(base_dir+"\\data\\users\\UserAuth.txt","r") as f_read:
                         for line in f_read:
                             usr,pad=line.strip('"').split(":")
                             if usr==username:
@@ -106,7 +106,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
                 if wr_tag==False:
                     joindir=""
                     #此处是为了预防初次操作不存在当前目录#####################
-                    dirs=(Base_dir+"\\Data\\Users\\UserAuth.txt").split("\\")
+                    dirs=(base_dir+"\\data\\users\\UserAuth.txt").split("\\")
                     for i  in  range(0,len(dirs)):
                         if len(dirs)==i+1:
                             break
@@ -117,11 +117,11 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
                             os.mkdir(joindir)
                     #############################################################
                     #将用户名密码写入userauth.txt文件
-                    with open(Base_dir+"\\Data\\Users\\UserAuth.txt","a") as f:
+                    with open(base_dir+"\\data\\users\\UserAuth.txt","a") as f:
                         f.write(json.dumps(str(username)+":"+str(password)))
                         f.write("\n")
                     #将配额值写入配额文件
-                    with open(Base_dir+"\\Data\\Users\\Quota.txt","a") as f_quota:
+                    with open(base_dir+"\\data\\users\\Quota.txt","a") as f_quota:
                         f_quota.write(json.dumps(str(username)+":"+str(quotavalue)))
                         f_quota.write("\n")
                     logging.info("管理员注册账号成功，账号名：%s，用户默认空间限额：%s"%(username,quotavalue))
