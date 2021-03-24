@@ -40,13 +40,58 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     def handle(self):
         if self.auth_msg.get('type') == 'auth':
             auth_tag = self.__auth()
+            if auth_tag==101:
+                logger.info("用户 %s 从终端 %s 登录成功！"%(self.username,self.ipaddr))
+                #此处定义的是当前登录用户的目标文件夹，此处也是函数self.dest初始化的位置
+                self.dest=HomeDocs+"\\"+self.username
+                ##########此处执行的动作是创建以用户名命名的文件夹，防止后续操作出现问题###############
+                dirs=self.dest.split("\\")
+                res_item=""
+                for item in  dirs:
+                    res_item=res_item+item+"\\"
+                    if os.path.exists(res_item):
+                        pass
+                    else:
+                        os.mkdir(res_item)
+                ###################读取当前用户的空间使用值#############################################
+                with open(base_dir+"\\data\\users\\Quota.txt","r") as f_qtread:
+                    for qt in f_qtread:
+                        qtusr,qtvl=qt.strip("\n").strip('"').split(":")
+                        if qtusr==self.username:
+                            self.qtvl=qtvl
+                            self.qtvl=int(self.qtvl)*1024*1024
+                            break
+                ####################读取当前用户名下的文件大小###########################################
+                self.allsize=0
+                for size_path,size_dirs,size_files in os.walk(HomeDocs+"\\"+self.username):
+                    for  item in size_files:
+                        self.allsize=self.allsize+int(os.path.getsize(os.path.join(size_path,item)))
+                self.__changemsg()
+            elif auth_tag==102:
+                logger.error("用户名 %s 未注册。"%self.username)
+            elif auth_tag==100:
+                logger.error("用户登录失败，用户名或密码发送错误。")
 
     '''
     # 服务端用户加密认证
     '''
     def __auth(self):
         if self.role == 'ordinary': # 普通用户身份登录
-            pass
+            auth_tag=False
+            if os.path.exists(base_dir+"\\data\\users\\UserAuth.txt"):
+                with open(base_dir+"\\data\\users\\UserAuth.txt","r") as f_read:
+                    for line in f_read:
+                        usr,pad=line.strip('\n').strip('"').split(":")
+                        if usr==self.username and pad ==self.md5_password:
+                            auth_tag=True
+                            self.__sendmsg(101)
+                            return 101
+                if auth_tag==False:
+                    self.__sendmsg(100)
+                    return 100
+            else:
+                self.__sendmsg(102)
+                return 102
         elif self.role == 'mgr': # 管理员身份登录
             m = hashlib.md5(password.encode('utf-8'))
             passwd_value = m.hexdigest()
@@ -240,6 +285,52 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         Rsg_source=self.request.recv(1024)
         Rsg=json.loads(Rsg_source.decode())
         return Rsg
+
+
+    def __changemsg(self):
+        '''
+        此函数为登录成功后客户端与服务器相互交互的函数，客户端发送相关指令给服务器，服务器根据指令分配相应函数完成。
+        :return:
+        '''
+        while True:
+            try:
+                self.chmsg=self.__recvmsg()
+                if self.chmsg.get("Type")=="pwd":
+                    #运行pwd函数
+                    self.__pwd()
+                elif self.chmsg.get("Type")=="cd":
+                    self.__cd()
+                elif self.chmsg.get("Type")=="ls":
+                    self.__ls()
+                elif self.chmsg.get("Type")=="put":
+                    self.__put()
+                elif self.chmsg.get("Type")=="get":
+                    self.__get()
+                elif self.chmsg.get("Type")=="mkdir":
+                    self.__mkdir()
+                elif self.chmsg.get("Type")=="rm":
+                    self.__rm()
+                elif self.chmsg.get("Type")=="bye":
+                    self.__bye()
+                else:
+                    self.__help()
+            except:
+                logger.info("客户端%s已断开连接"%self.ipaddr)
+                break
+
+    def __help(self):
+        hsg={
+            "put":"作用：上传文件，格式：put 文件名",
+            "get":"作用：下载文件，格式：get 原文件名 目标文件路径",
+            "ls":"作用：展示当前文件夹内容，格式： ls",
+            "pwd":"作用：展示当前文件夹路径，格式：pwd",
+            "cd":"作用：切换文件夹，格式：cd 目标文件夹",
+            "mkdir":"作用：创建文件夹，格式： mkdir 文件夹名称",
+            "rm":"作用：移除文件夹，格式：rm 文件夹名称",
+            "bye":"作用：离开， 格式：bye"
+        }
+        self.__sendmsg(102,data=hsg)
+
 
     def finish(self):
         print("finish")
