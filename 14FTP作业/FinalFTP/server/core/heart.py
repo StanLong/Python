@@ -318,6 +318,187 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
                 logger.info("客户端%s已断开连接"%self.ipaddr)
                 break
 
+    def __ls(self):
+        '''
+        #此处为遍历当前目录下所有的文件夹和文件，然后返回。
+        #若当前目录为空，则不会返回data数据，客户端可据此进行判断“当前目录为空”
+        :return:
+        '''
+        ls_send_list=[]
+        if self.chmsg.get("Type") is not None:
+            ls_send_list=self.__walk()
+            logger.info("用户%s遍历了目录,目录名为%s"%(self.username,self.dest.strip("").split("\\")[-1]))
+        self.__sendmsg(103,data=ls_send_list)
+
+    def __walk(self):
+        '''
+        #此处遍历当前目录，找出所在文件夹的子文件夹和文件列表，并返回相应的列表，格式为  [[文件夹列表]，[文件列表]]
+        :return: 返回的是当前文件夹下存在的文件夹名和文件名的列表
+        '''
+        c=0
+        search_list=[]
+        ls_list=os.walk(self.dest)
+        for item in ls_list:
+            for item2 in item:
+                if c==0:
+                    c+=1
+                    continue
+                search_list.append(item2)
+            if c==1:
+                break
+        return search_list
+
+    def __cd(self):
+        '''
+        #执行目录切换动作的函数
+        :return:
+        '''
+        if self.chmsg.get("Type") is not None:
+            dest=self.chmsg["dest"]
+            #将全局的self.dest赋值到本函数内的this_dest,确保调用。
+            this_dest=self.dest
+            # this_tag=False
+            #此处只是获取search_walk返回的文件夹列表##
+            floder_list=(self.__walk())#[0]
+            file_list=floder_list[0]
+            ###########################################
+            if dest in file_list:
+                self.dest=this_dest+"\\"+dest
+                self.__sendmsg(109)
+                logger.info("用户%s已将目录切换至%s"%(self.username,self.dest))
+            #若使用“..”进行文件夹切换，可返回至上层目录。
+            #此处会进行判断是否切换的目录超过权限，若超过，则维持原目录，即最高可切换至以用户名命名的文件夹。
+            elif dest=="..":
+                #如果切换越权，维持原目录
+                if self.dest==HomeDocs+"\\"+self.username+"\\" or self.username not in self.dest.split("\\"):
+                    self.dest=HomeDocs+"\\"+self.username
+                    logger.error("用户%s指定切换的目录越权，无法完成切换。"%self.username)
+                    self.__sendmsg(111)
+                #如果没有越权，则执行切换，将字符串切割以后舍弃最后一个。
+                # elif HomeDocs+"\\"+self.username in self.dest:
+                else:
+                    dest_list=self.dest.split("\\")
+                    new_dest=""
+                    for i in range(0,len(dest_list)):
+                        if len(dest_list)==i+1:
+                            break
+                        new_dest=new_dest+dest_list[i]+"\\"
+                    #执行完成切换以后，将已经变动的当前文件路径重新赋值给全局的self.dest，算是告知所有协同工作的函数
+                    self.dest=new_dest.strip("\\")
+                    logger.info("用户%s切换目录至上一级%s"%(self.username,self.dest))
+                    self.__sendmsg(110)
+            else:
+                logger.error("用户%s切换目录至%s失败，服务器不存在此目录"%(self.username,dest))
+                self.__sendmsg(108)
+
+    def __pwd(self):
+        '''
+        #此为查看当前所在位置的函数
+        :return:
+        '''
+        send_list=""
+        send_tag=False
+        if self.chmsg.get("Type") is not None:
+            dest_list=self.dest.split("\\")
+            for item in dest_list:
+                if item!="":
+                    if item==self.username:
+                        send_tag=True
+                    if send_tag==True:
+                        send_list=send_list+item+"\\"
+            logger.info("用户：%s查询了当前所在目录：%s"%(self.username,send_list))
+            self.__sendmsg(103,data=send_list)
+
+
+    def __mkdir(self):
+        '''
+        #此为执行创建目录的函数
+        :return:
+        '''
+        if self.chmsg.get("Type") is not None:
+            mkname=self.chmsg.get("mkname")
+            if os.path.exists(self.dest+"\\"+mkname):
+                logger.error("指定创建的目录已存在，无法创建")
+                self.__sendmsg(112)
+            else:
+                #在创建目录的过程中，此处判断是否存在路径上没有的目录，若目录上没有，则会一块创建。
+                dirs=self.dest.split("\\")
+                dirs.append(mkname)
+                res_item=""
+                for item in  dirs:
+                    res_item=res_item+item+"\\"
+                    if os.path.exists(res_item):
+                        pass
+                    else:
+                        os.mkdir(res_item)
+                self.__sendmsg(113)
+                logger.info("用户%s创建文件夹%s成功"%(self.username,self.chmsg.get("mkname")))
+
+
+    def __rm(self):
+        '''
+        #此为执行移除文件或者文件夹的函数
+        #需要判断移除的是文件还是文件夹，第一遍循环的是文件夹，第二遍循环的是文件
+        #在删除文件夹的时候，若文件夹内有文件，使用os.rmdir()无法移除文件夹，会直接报错
+        #使用shutil.rmtree则可以直接全部删除
+        :return:
+        '''
+        if self.chmsg.get("Type") is not None:
+            c=0
+            tag=False
+            rmname=self.chmsg.get("rmname")
+            file_list=self.__walk()
+            for item in file_list:
+                if rmname in item and c==0:
+                    if os.path.exists(self.dest+"\\"+rmname):
+                        try:
+                            shutil.rmtree(self.dest+"\\"+rmname)
+                            logger.info("文件夹%s已被用户%s删除"%(rmname,self.username))
+                            self.__sendmsg(114)
+                        except:
+                            logger.error("文件夹%s删除异常，未能成功处理"%rmname)
+                            self.__sendmsg(118)
+                    else:
+                        logger.error("指定删除的文件夹不存在，无法完成删除")
+                        self.__sendmsg(115)
+                    tag=True
+                #在循环第一遍的时候，因为c=0，因此无法执行此函数，只有在循环的第二遍的时候，才会进入此判断
+                elif  rmname in item and c==1:
+                    if os.path.isfile(self.dest+"\\"+rmname):
+                        try:
+                            os.remove(self.dest+"\\"+rmname)
+                            self.__sendmsg(116)
+                            logger.error("文件%s已被用户%s删除"%(rmname,self.username))
+                        except:
+                            logger.error("文件%s删除异常，未能成功处理"%rmname)
+                            self.__sendmsg(118)
+                    else:
+                        logger.error("指定删除的文件不存在，无法完成删除")
+                        self.__sendmsg(117)
+                    tag=True
+                c+=1
+            if tag==False:
+                logger.error("指定删除的文件不存在，无法完成删除")
+                self.__sendmsg(117)
+            #################执行删除动作以后，重新计算当前用户目录下的文件大小####################
+            self.allsize=0
+            for size_path,size_dirs,size_files in os.walk(HomeDocs+"\\"+self.username):
+                for  item in size_files:
+                    self.allsize=self.allsize+int(os.path.getsize(os.path.join(size_path,item)))
+            ########################################################################################
+
+
+    def __bye(self):
+        '''
+        #此为告知客户端关闭通知的函数
+        :return:
+        '''
+        if self.chmsg.get("Type") is not None:
+            action=self.chmsg.get("Type")
+            if action=="bye":
+                logger.info("用户%s已退出"%self.username)
+                self.__sendmsg(103,data="OK")
+
     def __help(self):
         hsg={
             "put":"作用：上传文件，格式：put 文件名",
@@ -333,4 +514,5 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
 
     def finish(self):
-        print("finish")
+        logger.info("%s与服务器连接结束。"%self.ipaddr)
+        logger.info("=============================================================")
