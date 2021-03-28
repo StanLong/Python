@@ -1,0 +1,44 @@
+2021-03-29 00:15:15,945 - INFO - 用户名: zhangsan尝试从终端 192.168.0.104 登录服务器
+2021-03-29 00:15:15,947 - INFO - 用户 zhangsan 从终端 192.168.0.104 登录成功！
+2021-03-29 00:15:18,471 - INFO - 用户zhangsan遍历了目录,目录名为zhangsan
+2021-03-29 00:15:20,874 - INFO - 用户zhangsan已将目录切换至D:\StanLong\git_repository\Python\14FTP作业\FinalFTP\server\data\Docs\zhangsan\abc
+2021-03-29 00:15:23,232 - INFO - 用户：zhangsan查询了当前所在目录：zhangsan\abc\
+2021-03-29 00:15:28,700 - INFO - 用户zhangsan创建文件夹a成功
+2021-03-29 00:15:31,968 - INFO - 用户zhangsan已将目录切换至D:\StanLong\git_repository\Python\14FTP作业\FinalFTP\server\data\Docs\zhangsan\abc\a
+2021-03-29 00:15:35,012 - INFO - 用户zhangsan遍历了目录,目录名为a
+2021-03-29 00:15:38,755 - INFO - 用户zhangsan切换目录至上一级D:\StanLong\git_repository\Python\14FTP作业\FinalFTP\server\data\Docs\zhangsan\abc
+2021-03-29 00:15:43,092 - INFO - 用户zhangsan遍历了目录,目录名为abc
+2021-03-29 00:15:46,675 - INFO - 用户：zhangsan查询了当前所在目录：zhangsan\abc\
+2021-03-29 00:15:51,382 - ERROR - 文件夹a删除异常，未能成功处理
+2021-03-29 00:16:58,757 - INFO - 客户端192.168.0.104已断开连接
+2021-03-29 00:16:58,758 - INFO - 192.168.0.104与服务器连接结束。
+2021-03-29 00:16:58,758 - INFO - =============================================================
+2021-03-29 00:17:09,991 - INFO - 用户名: zhangsan尝试从终端 192.168.0.104 登录服务器
+2021-03-29 00:17:09,992 - INFO - 用户 zhangsan 从终端 192.168.0.104 登录成功！
+2021-03-29 00:17:12,151 - INFO - 用户：zhangsan查询了当前所在目录：zhangsan\
+2021-03-29 00:17:14,731 - INFO - 用户zhangsan已将目录切换至D:\StanLong\git_repository\Python\14FTP作业\FinalFTP\server\data\Docs\zhangsan\abc
+2021-03-29 00:17:16,228 - INFO - 用户zhangsan遍历了目录,目录名为abc
+2021-03-29 00:17:18,835 - ERROR - 文件夹a删除异常，未能成功处理
+2021-03-29 00:18:22,998 - INFO - 用户名: zhangsan尝试从终端 192.168.0.104 登录服务器
+2021-03-29 00:18:23,000 - INFO - 用户 zhangsan 从终端 192.168.0.104 登录成功！
+2021-03-29 00:18:31,151 - INFO - 用户zhangsan遍历了目录,目录名为zhangsan
+2021-03-29 00:18:47,322 - INFO - 客户端192.168.0.104已断开连接
+2021-03-29 00:18:47,322 - INFO - 192.168.0.104与服务器连接结束。
+2021-03-29 00:18:47,323 - INFO - =============================================================
+2021-03-29 00:19:05,328 - INFO - 用户名: zhangsan尝试从终端 192.168.0.104 登录服务器
+2021-03-29 00:19:05,330 - INFO - 用户 zhangsan 从终端 192.168.0.104 登录成功！
+2021-03-29 00:19:07,770 - INFO - 用户zhangsan遍历了目录,目录名为zhangsan
+2021-03-29 00:19:09,660 - INFO - 用户zhangsan已将目录切换至D:\StanLong\git_repository\Python\14FTP作业\FinalFTP\server\data\Docs\zhangsan\abc
+2021-03-29 00:19:12,655 - INFO - 用户zhangsan遍历了目录,目录名为abc
+2021-03-29 00:19:27,005 - INFO - 文件夹a已被用户zhangsan删除
+2021-03-29 00:20:11,365 - INFO - 用户名: zhangsan尝试从终端 192.168.0.104 登录服务器
+2021-03-29 00:20:11,366 - ERROR - 用户登录失败，用户名或密码发送错误。
+2021-03-29 00:20:11,366 - INFO - 192.168.0.104与服务器连接结束。
+2021-03-29 00:20:11,367 - INFO - =============================================================
+2021-03-29 00:20:17,787 - INFO - 用户名: zhangsan尝试从终端 192.168.0.104 登录服务器
+2021-03-29 00:20:17,788 - INFO - 用户 zhangsan 从终端 192.168.0.104 登录成功！
+2021-03-29 00:20:19,775 - INFO - 用户zhangsan遍历了目录,目录名为zhangsan
+2021-03-29 00:20:21,390 - INFO - 用户zhangsan已将目录切换至D:\StanLong\git_repository\Python\14FTP作业\FinalFTP\server\data\Docs\zhangsan\abc
+2021-03-29 00:20:23,544 - INFO - 用户zhangsan创建文件夹a成功
+2021-03-29 00:20:24,983 - INFO - 用户zhangsan遍历了目录,目录名为abc
+2021-03-29 00:20:29,756 - INFO - 文件夹a已被用户zhangsan删除

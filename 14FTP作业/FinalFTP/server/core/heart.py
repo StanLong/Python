@@ -3,6 +3,7 @@ import sys
 import json
 import time
 import timer
+import shutil
 import hashlib
 import logging
 import socketserver
