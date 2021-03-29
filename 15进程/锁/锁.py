@@ -20,9 +20,9 @@ def get(name):
     if ticket_count > 0:
         with open('ticket.txt', 'w', encoding='utf-8') as f_w:
             json.dump({'count':ticket_count-1}, f_w)
-        print('%s买到票了' %name)
+        print('%s买到票了, 剩余票数 %s' %(name, ticket_count-1))
     else:
-        print('没票了')
+        print('%s 票卖完了' %name)
 
 
 def task(name, lock):
