@@ -1,0 +1,13 @@
+2021-03-30 00:16:52,841 - INFO - 用户名: zhangsan尝试从终端 192.168.0.104 登录服务器
+2021-03-30 00:16:52,842 - INFO - 用户 zhangsan 从终端 192.168.0.104 登录成功！
+2021-03-30 00:16:56,551 - INFO - 用户：zhangsan查询了当前所在目录：zhangsan\
+2021-03-30 00:16:59,691 - INFO - 用户zhangsan已将目录切换至D:\StanLong\git_repository\Python\14FTP作业\FinalFTP\server\data\Docs\zhangsan\abc
+2021-03-30 00:17:01,204 - INFO - 用户zhangsan遍历了目录,目录名为abc
+2021-03-30 00:18:31,691 - INFO - 传输完成！文件（PotPlayer_64_bit_1.7.21391.exe）已上传至服务器
+2021-03-30 00:18:36,866 - INFO - 用户：zhangsan查询了当前所在目录：zhangsan\abc\
+2021-03-30 00:18:38,271 - INFO - 用户zhangsan遍历了目录,目录名为abc
+2021-03-30 00:19:57,670 - INFO - 用户zhangsan遍历了目录,目录名为abc
+2021-03-30 00:20:38,183 - INFO - 传输完成，文件(PotPlayer_64_bit_1.7.21391.exe)已下载至客户端。
+2021-03-30 00:21:21,231 - INFO - 用户：zhangsan查询了当前所在目录：zhangsan\abc\
+2021-03-30 00:21:24,189 - INFO - 用户zhangsan遍历了目录,目录名为abc
+2021-03-30 00:21:38,139 - ERROR - 文件PotPlayer_64_bit_1.7.21391.exe已被用户zhangsan删除

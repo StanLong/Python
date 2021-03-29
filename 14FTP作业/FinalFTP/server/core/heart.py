@@ -488,6 +488,185 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
                     self.allsize=self.allsize+int(os.path.getsize(os.path.join(size_path,item)))
             ########################################################################################
 
+    def __put(self):
+        '''
+        ##执行上传动作的函数#
+        :return:
+        '''
+        recv_len=0#已经收到的长度
+        tag=False#tag 是用来判断是否有必要执行下一步的，如果此文件名存在于服务器，那么不接受再次传入。
+        filename=self.chmsg["filename"]#取得发送过来的文件名
+        if "\\" in filename:#此处是为了判断发送过来的文件是否携带路径，若携带路径，则对字符串进行切割提取。
+            filename=(filename.split("\\"))[-1]
+        size=self.chmsg["size"]#取得发送过来的文件大小
+        md5=self.chmsg["md5"]#取得文件发送过来的md5值
+        exist_list=self.__walk()
+        #md5值的计算
+        file_md5 = hashlib.md5()
+        ##################
+        for existname in exist_list:
+            if len(existname)!=0:
+                if filename in existname:
+                    tag=True#tag为真，证明文件存在，若还需要传输，则需要进行md5值的比较。
+        ########################此处计算已经存在文件的size加上需要上传的文件的size###########
+        self.allsize=int(self.allsize)+int(size)
+        #存在的文件加要上传的文件如果没超过限定值，开始接受传输。
+        if self.qtvl>=self.allsize:
+            #如果tag为Flase， 则证明服务器端原本就没有此文件，那么此文件就以新文件形式处理。
+            if tag==False:
+                #服务器向客户端发出继续发送的指令。
+                self.__sendmsg(102,data="continue")
+                filename_stream=open(self.dest+"\\"+filename,"wb")
+                while True:
+                    ############循环接受数据传输##################
+                    try:
+                        if recv_len<int(size):
+                            filedata_source=self.request.recv(1024*100)
+                            #此处进行判断是因为在客户端断开后，可能会传输空字符串，从而导出出现问题。
+                            if filedata_source ==b"":
+                                errsize3=os.path.getsize(self.dest+"\\"+filename)
+                                errvalue2=eval("(errsize3/size)*100")
+                                logger.error("目标已传入：百分之%.2f"%errvalue2)
+                                return False
+                            file_md5.update(filedata_source)
+                            filename_stream.write(filedata_source)
+                            recv_len+=len(filedata_source)
+                    #############################################
+                        #若接受的字节长度与传过来的文件大小相等，则代表接收完成。
+                        else:
+                            if size==recv_len:
+                                filename_stream.close()
+                                hash_recv=file_md5.hexdigest()
+                                if md5==hash_recv:
+                                    logger.info("传输完成！文件（%s）已上传至服务器"%filename)
+                                    self.__sendmsg(120)
+                                else:
+                                    #此处是在传输最后比较md5值，不一样的话则证明文件出现问题，直接将此文件删除。
+                                    os.remove(self.dest+"\\"+filename)
+                                    logger.info("传输存在问题，文件（%s）md5有异,已被删除"%filename)
+                                    self.__sendmsg(121)
+                                break
+                    #此处是用来表明链接出现问题的情况，一般为客户端被强行终端，从而导致传输没能完成。
+                    except:
+                        errsize=os.path.getsize(self.dest+"\\"+filename)
+                        errvalue=eval("(errsize/size)*100")
+                        logger.error("链接中断，目标已传入：百分之%.2f"%errvalue)
+                        break
+            #此处是标明了tag为True的情况，这证明了此文件名之前是存在的，那么现在就需要进行断点续传。
+            else:
+                #获取服务器端当前存在的文件大小。
+                exist_size=os.path.getsize(self.dest+"\\"+filename)
+                #获取服务器端当前存在的文件的MD5值
+                exist_md5=hashlib.md5()
+                with open(self.dest+"\\"+filename,"rb") as f_exist:
+                    for line in f_exist:
+                        exist_md5.update(line)
+                #对比前期传过来的文件size，若size一样，则证明了之前文件已经传输完成，在此情况下就不需要进行断点续传了。
+                if self.chmsg.get("size")==exist_size:
+                    logger.error("文件%s已存在，拒绝重复传入。"%filename)
+                    self.__sendmsg(119)
+                #若文件的size大小不一样，那么就需要对比文件的md5值，看上传的文件与当前服务器存在的文件是否一致
+                #将文件名一致但内容不一致的情况去除。
+                else:
+                    #传送服务器端已经存在的文件size和md5值，以便客户端进行校对。
+                    exist_msg={
+                        "size":exist_size,
+                        "md5":exist_md5.hexdigest()
+                    }
+                    self.__sendmsg(122,data=exist_msg)
+                    #收到客户端返回的信息，返回的信息中包含了校对的size和md5值是否一致。
+                    #一致则皆为equally  不一致则为difference
+                    exmsg=self.__recvmsg()
+                    #一致的情况下进行文件接收，此处的文件接收是经过客户端过滤，即是从已经接受了多少的情况下继续接收，而不是
+                    #从头开始接收。
+                    if exmsg.get("size")=="equally" and exmsg.get("md5")=="equally":
+                        #发送信号告知客户端开始进行传输。
+                        self.__sendmsg(103,data="continue")
+                        exist_filename_stream=open(self.dest+"\\"+filename,"ab")
+                        while True:
+                            ############循环接受数据传输##################
+                            try:
+                                if exist_size<int(size):
+                                    filedata_source=self.request.recv(1024*1000)
+                                    if filedata_source ==b"":
+                                        errsize3=os.path.getsize(self.dest+"\\"+filename)
+                                        errvalue2=eval("(errsize3/size)*100")
+                                        logger.error("目标已传入：百分之%.2f"%errvalue2)
+                                        break
+                                    exist_md5.update(filedata_source)
+                                    exist_filename_stream.write(filedata_source)
+                                    exist_size+=len(filedata_source)
+                            #############################################
+                                #若接受的字节长度与传过来的文件大小相等，则代表接收完成。
+                                elif exist_size==int(size):
+                                    exist_filename_stream.close()
+                                    hash_recv=exist_md5.hexdigest()
+                                    if md5==hash_recv:
+                                        logger.info("传输完成！文件（%s）已上传至服务器"%filename)
+                                        self.__sendmsg(120)
+                                    else:
+                                        os.remove(self.dest+"\\"+filename)
+                                        logger.info("传输存在问题，文件（%s）md5有异,已被删除"%filename)
+                                        self.__sendmsg(121)
+                                    break
+                            #此处是为了防止出现客户端断开链接的情况
+                            except:
+                                errsize2=os.path.getsize(self.dest+"\\"+filename)
+                                errvalue2=eval("(errsize2/size)*100")
+                                logger.error("链接中断，目标已传入：百分之%.2f"%errvalue2)
+                                break
+                    #此处是在校对了文件以后，size和md5值不一致的情况下，结束文件接受。
+                    elif exmsg.get("size")=="difference" and exmsg.get("md5")=="difference":
+                        logger.error("两次传入文件MD5值不相同，无法断点续传文件。")
+                        self.__sendmsg(123)
+        #超过限额值则直接返回不满足上传条件。
+        elif self.qtvl<self.allsize:
+            self.allsize=self.__countsize()
+            self.__sendmsg(414)
+            logger.info("用户%s上传的文件大于当前可用空间，无法完成上传。"%self.username)
+
+
+    def __get(self):
+        '''
+        #执行下载动作的函数#
+        :return:
+        '''
+        if self.chmsg.get("Type") is not None:
+            try:
+                #此处只考虑文件存在的情况，不存在的情况直接触发try except。
+                filename=self.chmsg["filename"]
+                size=os.path.getsize(self.dest+"\\"+filename)
+                file_msg={
+                    "filename":filename,
+                    "size":size
+                }
+                ####发送下载该文件的相关信息
+                self.__sendmsg(103,data=file_msg)
+                start_tag=self.request.recv(1024)
+                #客户端接受到相应的文件信息，并同意服务器开始发送数据。
+                if start_tag==b"121":
+                    ###########执行发送文件的动作########################
+                    recv_len=0#已经发送的长度
+                    with open(self.dest+"\\"+filename,"rb") as f_read:
+                        while True:
+                            if recv_len<int(size):
+                                filedata_source=f_read.read(1024*100)
+                                self.request.send(filedata_source)
+                                recv_len=recv_len+len(filedata_source)
+                            else:
+                                break
+                    ##########接收客户端的反馈###########################
+                    return_tag=self.request.recv(1024)
+                    if return_tag==b"121":
+                        logger.info("传输完成，文件(%s)已下载至客户端。"%filename)
+                    else:
+                        logger.error("文件下载失败.")
+                else:
+                    pass
+            except:
+                logger.error("用户%s请求下载的文件未查询到"%self.username)
+                self.__sendmsg(107)
+
 
     def __bye(self):
         '''
