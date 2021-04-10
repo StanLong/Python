@@ -1,13 +1,14 @@
-# Manager 提供了可以进行数据共享的机制
+# Manager 提供了进程之间可以进行数据共享的机制
 from multiprocessing import Manager
 from multiprocessing import Process
 import time
+import os
 
 def func(dic):
     while True:
-        print(dic)
-        dic['name'] = '沈万三'
-        time.sleep(3)
+        dic['count'] = dic['count'] -1
+        print(dic, os.getpid())
+        time.sleep(1)
 
 
 if __name__ == '__main__':
@@ -19,7 +20,9 @@ if __name__ == '__main__':
 
     m = Manager()
     dic = m.dict()
-    dic['name'] = 'stanlong'
-    p = Process(target=func, args=(dic, ))
-    p.start()
-    p.join()
+    dic['count'] = 100
+    lst = []
+    for i in range(10):
+        p = Process(target=func, args=(dic, ))
+        p.start()
+        p.join()
