@@ -1,5 +1,4 @@
 # 守护线程
-
 import time
 import threading
 def func():
@@ -14,3 +13,5 @@ t1.start()
 t2 = threading.Thread(target=func)
 t2.start()
 t2.join()
+
+
