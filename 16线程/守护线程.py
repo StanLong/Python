@@ -1,17 +1,24 @@
 # 守护线程
-import time
+# 守护线程，程序结束时，线程跟着结束
+
 import threading
-def func():
-    print("开始执行子进程 %s" %threading.currentThread().getName())
-    time.sleep(1)
-    print("子进程执行结束 %s" %threading.currentThread().getName())
+import time
+import sys
 
-t1 = threading.Thread(target=func)
-t1.setDaemon(True)
-t1.start()
+def install():
+    print("开始安装")
+    time.sleep(10)
+    print()
+    print("安装完成")
 
-t2 = threading.Thread(target=func)
-t2.start()
-t2.join()
+def until():
+    while True:
+        sys.stdout.write("###")
+        time.sleep(0.5)
+        sys.stdout.flush()
 
-
+t_install = threading.Thread(target=install)
+t_install.start()
+time.sleep(0.01)
+t_until = threading.Thread(target=until, daemon=True) # 开启守护线程
+t_until.start()
