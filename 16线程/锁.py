@@ -1,29 +1,55 @@
-# from threading import  Thread
-# from threading import Lock
+# 线程锁
+# 保证线程安全
+
+# 互斥锁
+import threading
+import time
+
+counter = 0
+lock = threading.Lock()
+
+class LockThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+    def run(self) -> None:
+        global counter, lock
+        time.sleep(1)
+        if lock.acquire():
+            counter = counter + 1
+            print("I am %s, set counter %s" %(threading.Thread.getName(self), counter))
+            lock.release()
+
+if __name__ == '__main__':
+    for i in range(20):
+        lt = LockThread()
+        lt.start()
+    time.sleep(1)
+
+
+# 可重入锁
+# import threading
 # import time
-# def func():
-#     # 锁没起作用
-#     # global n
-#     # time.sleep(0.01)
-#     # lock.acquire()
-#     # n = n -1
-#     # lock.release()
 #
-#     # 锁也没起作用
-#     global n
-#     time.sleep(0.01)
-#     lock.acquire()
-#     temp= n
-#     time.sleep(0.01)
-#     n = temp -1
-#     lock.release()
+# counter = 0
+# rlock = threading.RLock()
 #
-# n = 100
-# t_list = []
-# lock = Lock()
-# for i in range(90):
-#     t = Thread(target=func)
-#     t.start()
-#     t_list.append(t)
-# [t.join() for i in t_list]
-# print(n)
+# class RLockThread(threading.Thread):
+#     def __init__(self):
+#         threading.Thread.__init__(self)
+#     def run(self) -> None:
+#         time.sleep(1)
+#         global counter, rlock
+#         if rlock.acquire():
+#             counter = counter + 1
+#             print("I am %s, set counter %s" % (threading.Thread.getName(self), counter))
+#             if rlock.acquire():
+#                 counter = counter + 1
+#                 print("I am %s, set counter %s" % (threading.Thread.getName(self), counter))
+#                 rlock.release()
+#             rlock.release()
+#
+# if __name__ == '__main__':
+#     for i in range(20):
+#         rt = RLockThread()
+#         rt.start()
+#     time.sleep(1)
