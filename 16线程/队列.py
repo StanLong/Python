@@ -4,7 +4,7 @@ import queue
 # q = queue.Queue(maxsize=5)
 # # 后进先出队列 --> 栈
 # lq = queue.LifoQueue(maxsize=6)
-# # 优先级队列
+# # 优先级队列。数值越低，优先级越高
 # pq = queue.PriorityQueue(maxsize=5)
 #
 # for i in range(5):
