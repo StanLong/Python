@@ -23,13 +23,14 @@
 # 如果在这个函数（test1）中switch到其他协程（到了test2 打印34），那么该协程会被挂起，等到切换回来（在test2中切换回来 打印34）。
 # 当这个协程对应函数执行完毕，那么这个协程就变成dead状态
 
+# Greenlet 不能节省IO事件，Gevent 可以
 
 # Gevent是一个第三方库(需要额外自己安装)，可以轻松通过gevent实现并发同步或异步编程，
 # 在gevent中主要用到的模式是Greenlet，它是以C扩展模块形式接入Python的轻量级协程。
 # Greenlet全部运行在主程序操作系统的内部，被协作式调度
 # 使用gevent库实现协程
 import gevent
-
+from gevent import monkey;monkey.patch_all() # 把出现的IO流打包成gevent能识别的I/O流
 def func1():
     print("func1 running")
     gevent.sleep(2)  # 内部函数实现io操作
