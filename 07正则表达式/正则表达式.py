@@ -34,12 +34,17 @@ str = "abcdabcdwww"
 
 # re.search 的匹配范围要比 re.match 大
 
-# re.sub 用于替换字符串中的匹配项
+# re.sub 查找替换
 # str = "abcdabcdwww"
 # print(re.sub("www", "com", str)) # 把www替换成com
 # abcdabcdcom
 # print(re.sub("abc","xyz", str)) #  把匹配到的所有abc替换成xyz
 # xyzdxyzdwww
+
+# 替换html标签
+# pattern = re.compile(r'<[^>]+>',re.S)
+# result = pattern.sub('', html)
+# print(result)
 
 # re.findall 在字符串中找到正则表达式所匹配的所有子串，并返回一个列表,
 # 如果遇到分组，会优先显示分组中的内容
