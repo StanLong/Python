@@ -3,6 +3,7 @@
 # 发送端
 
 # https://btsow.cam/
+# https://btsow.shop/
 import os
 import json
 import struct
