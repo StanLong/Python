@@ -4,6 +4,8 @@
 
 # https://btsow.cam/
 # https://btsow.shop/
+# https://btsow.one
+# https://btsow.com
 import os
 import json
 import struct
