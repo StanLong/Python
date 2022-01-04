@@ -1,113 +1,119 @@
 # 栈
 
-# 使用栈计算中缀表达式
+# 逆波兰表达式
 
-class ArrayStack:
-    stack = [] # 使用数组模拟栈
-    top = -1 # 栈顶，默认-1
+# class ArrayStack:
 
-    def __init__(self, maxSize):
-        self.maxSize = maxSize # 定义栈容量
-        self.stack = [0 for i in range(maxSize)]
-
-    # 判空
-    def isEmpty(self):
-        return self.top == -1
-
-    # 判满
-    def isFull(self):
-        return self.top == self.maxSize -1
-
-    # 入栈
-    def push(self, value):
-        if self.isFull():
-            print("栈满了")
-            return
-        self.top = self.top + 1
-        self.stack[self.top] = value
-
-    # 出栈
-    def pop(self):
-        if self.isEmpty():
-            print("栈空了")
-            return
-        value = self.stack[self.top]
-        self.top = self.top - 1
-        return value
-
-    # 查看栈顶元素
-    def peek(self):
-        return self.stack[self.top]
-
-    # 判断是否是操作符
-    def isOper(self, oper):
-        return oper == '+' or oper == '-' or oper == '*' or oper == '/'
-
-    # 定义操作符优先级
-    def priority(self, oper):
-        if oper == '*' or oper == '/':
-            return 1
-        elif oper == '+' or oper == '-':
-            return 0
+# 将中缀表达式转换成List
+def infixExpressionList(expression):
+    arrayList = []
+    i = 0
+    strNum = ""
+    while True:
+        if i>= expression.__len__():
+            break
         else:
-            return -1
+            if not expression[i].isdigit():
+                arrayList.append(expression[i])
+                i = i + 1
+            else:
+                while True:
+                    if i < expression.__len__() and expression[i].isdigit():
+                        strNum = strNum + expression[i]
+                        i = i + 1
+                    else:
+                        break
+                arrayList.append(strNum)
+                strNum = ""
+    return arrayList
 
-    # 计算
-    def cal(self, num1, num2, oper):
-        if oper == '+':
-            return num1 + num2
-        if oper == '-':
-            return num2 - num1
-        if oper == '*':
-            return num1 * num2
-        if oper == '/':
-            return num2 / num1
+# 将中缀表达式转换成后缀表达式
+def suffixExpression(arrayList):
+    s1 = [] # 保存操作符
+    s2 = [] # 保存中间结果
+    i = 0 # 索引辅助遍历
+    ch = "" # 遍历出来的字符
+
+    while True:
+        if i >= len(arrayList):
+            break
+        else:
+            if arrayList[i].isdigit():
+                s2.append(arrayList[i])
+                i = i + 1
+            elif len(s1) == 0 or arrayList[i] == "(":
+                s1.append(arrayList[i])
+                i = i + 1
+            elif arrayList[i] == ")":
+                while True:
+                    if s1[-1] == "(":
+                        break
+                    else:
+                        s2.append(s1.pop())
+                s1.pop()
+                i = i + 1
+            else:
+                while True:
+                    if len(s1) != 0 and getValue(s1[-1]) >= getValue(arrayList[i]):
+                        s2.append(s1.pop())
+                    else:
+                        break
+                s1.append(arrarList[i])
+                i = i + 1
+
+    if len(s1) != 0:
+        while True:
+            if len(s1) == 0:
+                break
+            else:
+                s2.append(s1.pop())
+    return s2
+
+# 计算后缀表达式
+def calculate(s2):
+    num1 = 0
+    num2 = 0
+    result = 0
+    operator = ""
+    lst = []
+    for i in s2:
+        if i.isdigit():
+            lst.append(i)
+        else:
+            num1 = int(lst.pop())
+            num2 = int(lst.pop())
+            if i == "+":
+                result = num1 + num2
+            elif i == "-":
+                result = num2 - num1
+            elif i == "*":
+                result = num1 * num2
+            elif i == "/":
+                result = num2 / num1
+            else:
+                raise Exception("错误的操作符")
+            lst.append(result)
+    return lst[-1]
+
+
+# 定义操作符的优先级
+def getValue(operator):
+    if operator == "+":
+        return 1
+    elif operator == "-":
+        return 1
+    elif operator == "*":
+        return 2
+    elif operator == "/":
+        return 2
+    else:
+        return 0
+
 
 if __name__ == '__main__':
-    expression = "3+2*6-2"
-
-    numStack = ArrayStack(10) # 数栈
-    operStack = ArrayStack(10) # 符号栈
-
-    # 定义操作要用到的变量
-    index = 0 # 帮助遍历表达式
-    num1 = 0 # 操作数1
-    num2 = 0 # 操作数2
-    oper = 0 # 操作符
-    result = 0 # 计算结果
-    ch = '' # 遍历出的字符
-    keyNum = "" # 拼接多位数
-
-    while True:
-        ch = expression[index : (index + 1)] # 遍历表达式中的字符
-        if operStack.isOper(ch): # 如果是操作符
-            if not operStack.isEmpty(): # 如果操作符栈不为空
-                # 如果当前操作符的优先级小于等操作符栈顶的优先级， 就从数栈中出栈两个数，操作符栈中出栈一个操作符，进行运算, 并将运算得到结果压入数栈
-                if(operStack.priority(ch) <= operStack.priority(operStack.peek())):
-                    num1 = numStack.pop()
-                    num2 = numStack.pop()
-                    oper = operStack.pop()
-                    result = operStack.cal(num1, num2, oper)
-                    numStack.push(result)
-            operStack.push(ch)
-        else:
-            if not numStack.isOper(expression[index+1:index+2]):
-                keyNum = keyNum + ch
-            numStack.push(keyNum)
-
-        index = index + 1
-        if index == expression.__len__() - 1:
-            break
-
-    while True:
-        if not operStack.isEmpty():
-            num1 = numStack.pop()
-            num2 = numStack.pop()
-            oper = operStack.pop()
-            result = operStack.cal(num1, num2, oper)
-            numStack.push(result)
-    result = numStack.pop()
-
-    print("%s = %s" %(expression, result))
-
-
+    expression="1+((2+3)*4)-5"
+    arrarList = infixExpressionList(expression)
+    s2 = suffixExpression(arrarList)
+    print(s2)
+    result = calculate(s2)
+    print(result)
