@@ -1,38 +1,44 @@
-# 八皇后问题
 
-max = 8
-lst = [0 for i in range(8)]
-count = 0
+def matrixExpand(inp):
+    inp = inp.split(',')
+    matrix = [[0 for i in range(int(inp[0]))] for j in range(int(inp[1]))] # 初始化二维矩阵
 
-def printResult():
-    global count #  使用全局变量 count
-    count = count + 1
-    for i in lst:
-        print(i, end=" ")
-    print()
+    # 初始化起始点
+    matrix[int(inp[2])][int(inp[3])] = 1
+    matrix[int(inp[4])][int(inp[5])] = 1
+    count = 0 # 初始化计时器
+    needNext = True
+
+    # 每1秒循环一次
+    while needNext:
+        needNext = False
+        for i in range(int(inp[0])):
+            for j in range(int(inp[1])):
+                # 寻找满足条件的扩散点
+                if matrix[i][j] == 1:
+                    # 开始扩散
+                    if i>0 and matrix[i-1][j] != 1:
+                        matrix[i-1][j] = 2 # 数字2用来区分扩散点与原扩散点
+                    if i < int(inp[0])-1 and matrix[i+1][j] != 1:
+                        matrix[i+1][j] = 2
+                    if j>0 and matrix[i][j-1] != 1:
+                        matrix[i][j-1] = 2
+                    if j< int(inp[1]) -1 and matrix[i][j+1] !=1:
+                        matrix[i][j+1] = 2
+        # 新扩散点变为原扩散点
+        for i in range(int(inp[0])):
+            for j in range(int(inp[1])):
+                if matrix[i][j] == 2:
+                    matrix[i][j] == 1
+                elif matrix[i][j] == 0:
+                    needNext = True # 判断是否继续扩散
+        count += 1
+
+    print(count)
 
 
-def judge(n):
-    for i in range(n):
-        if lst[i] == lst[n] or abs(n - i) == abs(lst[n] - lst[i]):
-            return False
-    return True
-
-
-def check(n):
-    if n == max:
-        printResult()
-        return
-    for i in range(max):
-        lst[n] = i
-        if (judge(n)):
-            check(n + 1)
 
 
 if __name__ == '__main__':
-
-    check(0)
-    print("共有%s种写法" %count)
-
-
-
+    # inp='4,4,0,0,3,3'
+    matrixExpand(input())
