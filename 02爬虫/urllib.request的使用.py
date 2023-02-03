@@ -1,14 +1,18 @@
-# urllib基本使用 - 下载
+# urllib基本使用 - 请求对象的定制
 import urllib.request
 
-# 下载网页
-# url_page = 'http://www.baidu.com'
-# urllib.request.urlretrieve(url_page, 'baidu.html') # 参数是是下载路径，参数2是给下载的文件起个名字
+url_page = 'https://www.baidu.com'
 
-# 下载图片
-# url_img = 'https://nimg.ws.126.net/?url=https://dingyue.ws.126.net/2021/0329/8ad4eca3j00qqq7cr0064c000u000tim.jpg&thumbnail=650x2147483647&quality=80&type=jpg'
-# urllib.request.urlretrieve(url=url_img, filename='jieqi.jpg')
+# 伪造 headers
+headers = {
+    'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+}
 
-# 下载视频
-url_video = 'https://vd3.bdstatic.com/mda-mhkku4ndaka5etk3/sc/cae_h264/1629557146440689988/mda-mhkku4ndaka5etk3.mp4?v_from_s=hkapp-haokan-nanjing&amp;auth_key=1675259913-0-0-5f767ca337e72bc7ed98ace1397f0070&amp;bcevod_channel=searchbox_feed&amp;cd=0&amp;pd=1&amp;pt=3&amp;logid=1712979472&amp;vid=7322829317245497064&amp;abtest=106847_1&amp;klogid=1712979472'
-urllib.request.urlretrieve(url=url_video, filename='haokan.mp4')
+# 因为 urlopen 方法中不能存储字典，所以 headers 不能直接作为参数传递，需要定制请求对象
+# 注意，因为参数顺序的问题 (Request 需要的三个参数 (url, date=None, headers={}), 中间有个date), 所以需要用关键字传参
+request = urllib.request.Request(url=url_page, headers=headers)
+
+response = urllib.request.urlopen(request)
+content = response.read().decode('utf-8')
+print(content)
+
