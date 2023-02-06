@@ -1,101 +1,6 @@
-# 一、概念
+# 二、urllib库的使用
 
-## 1. 什么是互联网爬虫
-
-- 解释1：通过一个程序，根据Url(http://www.taobao.com)进行爬取网页，获取有用信息
-- 解释2：使用程序模拟浏览器，去向服务器发送请求，获取响应信息
-
-## 2. 爬虫的核心
-
-- 1.爬取网页：爬取整个网页 包含了网页中所有得内容
-- 2.解析数据：将网页中你得到的数据 进行解析
-- 3.难点：爬虫和反爬虫之间的博弈
-
-## 3. 爬虫的用途
-
-- 数据分析/人工数据集
-- 社交软件冷启动
-- 舆情监控
-- 竞争对手监控
-
-## 4. 爬虫的分类
-
-- 通用爬虫：
-
-  - 实例
-
-    百度，360，Google，搜狗等搜索引擎
-
-  - 功能
-
-    访问网页-》抓取数据-》数据储存-》数据处理-》提供检索服务
-
-  - robots协议
-
-    一个约定俗成的协议，添加robots.txt文件 来说明本网站哪些内容不可被抓取，起不到限制作用 自己写的爬虫无需遵守
-
-  - 网站排名（seo）
-
-    1. 根据pagerank算法进行排名（参考各站流量，点击率等指标）
-    2. 百度竞价排名
-
-  - 缺点
-
-    1. 抓取的数据大多是无用的
-    2. 不能更具用户的需求来精准获取数据
-
-- 聚焦爬虫
-
-  - 功能 
-
-    根据需求，实现爬虫程序，抓取需要的数据
-
-  - 设计思路
-
-    1. 确定要爬取的url
-
-       如何获取url
-
-    2. 模拟浏览器通过http协议访问url，获取服务器返回的html代码
-
-       如何访问
-
-    3. 解析html字符串（根据一定规则提取需要的数据）
-
-       如何解析
-
-## 5. 反爬手段
-
- 1. user-Agent：
-    
-             user-Agent中文名未用户代理，检查UA，它是一个特殊字符串头，使得服务器能够识别客户使用的操作系统及版本，cpu类型，浏览器及版本，浏览器渲染引擎，浏览器预约，浏览器插件等
-          
- 2. 代理ip
-
-       - 西刺代理
-
-       - 快代理
-       - 什么是高匿名，匿名和透明代理？它们有什么区别？
-         1. 使用透明代理，对方服务器可以知道你使用了代理，并且也知道你的真实ip
-         2. 使用匿名代理，对方服务器可以知道你使用了代理，但是不知道你的真实ip
-         3. 使用高匿名代理，对方服务器不知道你使用了代理，更不知道你的真实IP
-
- 3. 验证码访问
-
-       - 打码平台
-       - 云打码平台
-       - 超级🦅
-
- 4. 动态加载网页        
-
-       - 网站返回的是js数据 并不是网页的真实数据
-       - selenlim驱动真实的浏览器发送请求
-
- 5. 数据加密
-
-       - 分析js代码
-
-## 6. urllib库的使用
+## 1. urllib库的使用
 
 ```
 urllib.request.urlopen()模拟浏览器向服务器发送请求
@@ -180,7 +85,7 @@ url_video = 'https://vd3.bdstatic.com/mda-mhkku4ndaka5etk3/sc/cae_h264/162955714
 urllib.request.urlretrieve(url=url_video, filename='haokan.mp4')
 ```
 
-## 7. 请求对象的定制
+## 2. 请求对象的定制
 
 UA介绍：User Agent中文名为用户代理，简称 UA，它是一个特殊字符串头，使得服务器能够识别客户使用的操作系统 及版本、CPU 类型、浏览器及版本。浏览器内核、浏览器渲染引擎、浏览器语言、浏览器插件等
 
@@ -206,7 +111,7 @@ content = response.read().decode('utf-8')
 print(content)
 ```
 
-## 8. 编解码
+## 3. 编解码
 
 - get请求方式：
 
@@ -303,9 +208,8 @@ print(content)
   import urllib.parse
   import json
   
-  url_page = 'https://fanyi.baidu.com/sug'
+  url_page = 'https://fanyi.baidu.com/v2transapi?from=en&to=zh'
   
-  # headers 里起决定因素的参数是 Cookie
   headers = {
       # 'Accept':'*/*',
       # 'Accept-Encoding':'gzip, deflate, br', 这行指定了可接受的编码格式，但是不包含utf-8,先注释起来
@@ -351,97 +255,84 @@ print(content)
   # post请求的响应结果是一个json格式的字符串，需要json解析
   obj = json.loads(content)
   print(obj)
-  
-  # 执行结果有报错  {'errno': 1000, 'errmsg': '未知错误'}
   ```
 
   - post请求方式与get请求方式区别
 
-    1：get请求方式的参数必须编码，参数是拼接到url后面，编码之后不需要调用encode方法
+    get请求方式的参数必须编码，参数是拼接到url后面，编码之后不需要调用encode方法
 
-    2：post请求方式的参数必须编码，参数是放在请求对象定制的方法中，编码之后需要调用encode方法
+    post请求方式的参数必须编码，参数是放在请求对象定制的方法中，编码之后需要调用encode方法
 
-- **ajax的get请求**
+## 4. ajax的get请求
 
-- **ajax的post请求**
+```python
+# urllib基本使用 - get请求之获取豆瓣电影第一页的数据并保存
+import urllib.request
 
-- **cookie登录**
+url_page = 'https://movie.douban.com/j/chart/top_list?type=5&interval_id=100:90&action=&start=0&limit=20'
 
-## 写爬虫的思路
+headers = {
+    'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+}
 
-1. 给一个url
-2.  写程序，模拟浏览器访问url
-3.  解析内容，提取数据
+request = urllib.request.Request(url=url_page, headers=headers)
 
-## 涉及到的知识点
+response = urllib.request.urlopen(request)
+content = response.read().decode('utf-8')
 
-1. 使用到的库:
-       urllib/requests/bs4
-2. 解析网页内容的知识
-       正则表达式, bs4, xpath, jsonpath
-3. 设计到动态 html
-       selenium+phantomjs, chromeheadless
-4. scrapy 框架
-       高性能框架使用
-5. scrapy-redis 组件
-       redis, 分布式爬虫
-6. 设计到爬虫-反爬虫-反反爬虫的一些内容
-       UA, 代理， 验证码， 动态页面等
+# 保存数据到本地
+# open 方法默认情况下值班表和的是gbk编码，如果要保存中文则需要在open方法中指定 encoding='utf-8'
+fp = open('douban.josn', 'w', encoding='utf-8')
+fp.write(content)
 
-## http 和 https 协议
-
-```
-参考链接：https://www.cnblogs.com/wqhwe/p/5407468.html
-    超文本传输协议HTTP协议被用于在Web浏览器和网站服务器之间传递信息，HTTP协议以明文方式发送内容，不提供任何方式的数据加密，
-如果攻击者截取了Web浏览器和网站服务器之间的传输报文，就可以直接读懂其中的信息，因此，HTTP协议不适合传输一些敏感信息，比如：信用卡号、密码等支付信息。
-　　     为了解决HTTP协议的这一缺陷，需要使用另一种协议：安全套接字层超文本传输协议HTTPS，为了数据传输的安全，HTTPS在HTTP的基础上加入了SSL协议，
-SSL依靠证书来验证服务器的身份，并为浏览器和服务器之间的通信加密.
-    http(端口号80) 是应用层协议 https(端口号443)
-    客户端在使用HTTPS方式与Web服务器通信时有以下几个步骤，如图所示。
-　　（1）客户使用https的URL访问Web服务器，要求与Web服务器建立SSL连接。
-　　（2）Web服务器收到客户端请求后，会将网站的证书信息（证书中包含公钥）传送一份给客户端。
-　　（3）客户端的浏览器与Web服务器开始协商SSL连接的安全等级，也就是信息加密的等级。
-　　（4）客户端的浏览器根据双方同意的安全等级，建立会话密钥，然后利用网站的公钥将会话密钥加密，并传送给网站。
-　　（5）Web服务器利用自己的私钥解密出会话密钥。
-　　（6）Web服务器利用会话密钥加密与客户端之间的通信。
-
-参考链接：https://www.cnblogs.com/10158wsj/p/6762848.html
-一次HTTP操作称为一个事务，其工作过程可分为四步：
-1）首先客户机与服务器需要建立连接。只要单击某个超级链接，HTTP的工作开始。
-2）建立连接后，客户机发送一个请求给服务器，请求方式的格式为：统一资源标识符（URL）、协议版本号，后边是MIME信息包括请求修饰符、客户机信息和可能的内容。
-3）服务器接到请求后，给予相应的响应信息，其格式为一个状态行，包括信息的协议版本号、一个成功或错误的代码，后边是MIME信息包括服务器信息、实体信息和可能的内容。
-4）客户端接收服务器所返回的信息通过浏览器显示在用户的显示屏上，然后客户机与服务器断开连接。
-如果在以上过程中的某一步出现错误，那么产生错误的信息将返回到客户端，有显示屏输出。对于用户来说，这些过程是由HTTP自己完成的，用户只要用鼠标点击，等待信息显示就可以了。
+# 或者用另一种方法保存数据
+# with open('douban.json', 'w', encoding='utf-8') as fp:
+#     fp.write(content)
 ```
 
-### HTTP请求中的常用消息头:
+```python
+# urllib基本使用 - get请求之获取豆瓣电影前10页的数据并保存
+import urllib.request
+import urllib.parse
 
-```
-   accept:浏览器通过这个头告诉服务器，它所支持的数据类型
-　　Accept-Charset: 浏览器通过这个头告诉服务器，它支持哪种字符集
-　　Accept-Encoding：浏览器通过这个头告诉服务器，支持的压缩格式
-　　Accept-Language：浏览器通过这个头告诉服务器，它的语言环境
-　　Host：浏览器通过这个头告诉服务器，想访问哪台主机
-　　If-Modified-Since: 浏览器通过这个头告诉服务器，缓存数据的时间
-　　Referer：浏览器通过这个头告诉服务器，客户机是哪个页面来的  防盗链
-　　Connection：浏览器通过这个头告诉服务器，请求完后是断开链接还是何持链接
-   X-Requested-With: XMLHttpRequest, 通过ajax方式进行访问
-```
+def create_request(page):
+    base_url='https://movie.douban.com/j/chart/top_list?type=5&interval_id=100:90&action=&'
+    data = {
+        'start':(page-1)*20,
+        'limit':20
+    }
 
-### HTTP响应细节——常用响应头：
+    data = urllib.parse.urlencode(data)
 
-```
-    Location: 服务器通过这个头，来告诉浏览器跳到哪里
-　　Server：服务器通过这个头，告诉浏览器服务器的型号
-　　Content-Encoding：服务器通过这个头，告诉浏览器，数据的压缩格式
-　　Content-Length: 服务器通过这个头，告诉浏览器回送数据的长度
-　　Content-Language: 服务器通过这个头，告诉浏览器语言环境
-　　Content-Type：服务器通过这个头，告诉浏览器回送数据的类型
-　　Refresh：服务器通过这个头，告诉浏览器定时刷新
-　　Content-Disposition: 服务器通过这个头，告诉浏览器以下载方式打数据
-　　Transfer-Encoding：服务器通过这个头，告诉浏览器数据是以分块方式回送的
-　　Expires: -1  控制浏览器不要缓存
-　　Cache-Control: no-cache
-　　Pragma: no-cache
+    url = base_url + data
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+    }
+
+    request = urllib.request.Request(url=url, headers=headers)
+
+    return request
+
+def get_content(request):
+    response = urllib.request.urlopen(request)
+    content = response.read().decode('utf-8')
+    return content
+
+def down_load(page, content):
+    with open('douban_' + str(page) + '.json', 'w', encoding='utf-8') as fp:
+        fp.write(content)
+
+if __name__ == '__main__':
+    start_page = int(input("请输入起始的页码: "))
+    end_page = int(input("请输入结束的页码: "))
+
+    for page in range(start_page, end_page+1):
+        # 每一页都有自己的请求对象定制
+        request = create_request(page)
+        # 获取响应数据
+        content = get_content(request)
+        # 保存数据
+        down_load(page, content)
 ```
 
