@@ -9,13 +9,89 @@
 - 在浏览器中配置xpath插件 
 
   [xpath的下载与安装](https://blog.csdn.net/qq_43576837/article/details/108410989) 
+  
+- 安装lxml库
 
-1. 安装lxml库 `pip install lxml`
+  安装lxml库 `pip install lxml`
 
-2. 导入lxml.etree `from lxml import etree`
+  ```powershell
+  # 进入到python的安装目录，在Scripts 目录下使用豆瓣源安装
+  D:\Program Files\Python\Python37\Scripts>pip install lxml -i https://pypi.douban.com/simple
+  Looking in indexes: https://pypi.douban.com/simple
+  Collecting lxml
+    Downloading https://pypi.doubanio.com/packages/20/5b/caca461e172d696b151e50a182c6111d192175571e34f483a477122c5d79/lxml-4.9.2-cp37-cp37m-win_amd64.whl (3.8MB)
+       |████████████████████████████████| 3.9MB 6.4MB/s
+  Installing collected packages: lxml
+  Successfully installed lxml-4.9.2
+  ```
 
-3. etree.parse() 解析本地文件 `html_tree=etree.parse('XX.html')`
+- xpath基本语法
 
-4. etree.HTML() 服务器响应文件`html_tree = etree.HTML(response.read().decode('utf‐8')`
+  ```
+  1. 路径查询
+  	// : 查询所有子孙节点，不考虑路径关系
+  	/  : 查找直接子节点
+  2. 谓词查询
+      //div[@id]
+      //div[@id="maincontent"]
+  3. 属性查询
+  	//@class
+  4. 模糊查询
+  	//div[contains(@id, "he")]
+  	//div[starts-with(@id, "he")]
+  5. 内容查询
+  	//div/h1/text()
+  6. 逻辑运算
+  	//div[@id="head" and @class="s_down"]
+  	//title | // price
+  ```
 
-5. html_tree.xpath(xpath路径)
+  ```python
+  # xpath的基本使用
+  from lxml import etree
+  
+  # xpath 解析本地文件
+  tree = etree.parse('03xpath解析本地文件.html')
+  
+  # 查找 ul 下的 li
+  # li_list = tree.xpath('//body/ul/li')
+  # print(len(li_list))
+  
+  # 查找所有有id属性的li标签
+  # li_list = tree.xpath("//ul/li[@id]")
+  # print(li_list)
+  # print(len(li_list))
+  
+  # 查找所有有id属性的li标签中的内容
+  # text() 获取标签中的内容
+  # li_list = tree.xpath("//ul/li[@id]/text()")
+  # print(li_list)
+  
+  # 找到id为1的li标签
+  # li_list = tree.xpath('//ul/li[@id="1"]/text()')
+  # print(li_list)
+  
+  # 查找到id为1的li标签的class的属性值
+  # li_list = tree.xpath('//ul/li[@id="1"]/@class')
+  # print(li_list)
+  
+  # 查询id中包含i的li标签
+  #li_list = tree.xpath('//ul/li[contains(@id, "i")]/text()')
+  #print(li_list)
+  
+  # 查询id的值以i开头的li标签
+  # li_list = tree.xpath('//ul/li[starts-with(@id, "i")]/text()')
+  # print(li_list)
+  
+  # 查询id为1 和 class 为 c1 的 li 标签
+  # li_list = tree.xpath('//ul/li[@id="1" and @class="c1"]/text()')
+  # print(li_list)
+  
+  li_list = tree.xpath('//ul/li[@id="1"]/text() | //ul/li[@id="2"]/text()')
+  print(li_list)
+  ```
+
+  
+
+  
+

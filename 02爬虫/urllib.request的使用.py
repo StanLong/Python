@@ -1,21 +1,42 @@
-# urllib基本使用 - urllib 代理
-import urllib.request
-import urllib.parse
+# xpath的基本使用
+from lxml import etree
 
-url = 'http://www.baidu.com/s?wd=ip'
-header = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
-}
+# xpath 解析本地文件
+tree = etree.parse('03xpath解析本地文件.html')
 
-proxies = {
-    'http' : '117.93.180.62:9000'
-}
+# 查找 ul 下的 li
+# li_list = tree.xpath('//body/ul/li')
+# print(len(li_list))
 
-request = urllib.request.Request(url=url, headers= header)
-handler = urllib.request.ProxyHandler(proxies=proxies)
-opener = urllib.request.build_opener(handler)
-response = opener.open(request)
-content = response.read().decode('utf-8')
+# 查找所有有id属性的li标签
+# li_list = tree.xpath("//ul/li[@id]")
+# print(li_list)
+# print(len(li_list))
 
-with open('daili.html', 'w', encoding='utf-8') as fp:
-    fp.write(content)
+# 查找所有有id属性的li标签中的内容
+# text() 获取标签中的内容
+# li_list = tree.xpath("//ul/li[@id]/text()")
+# print(li_list)
+
+# 找到id为1的li标签
+# li_list = tree.xpath('//ul/li[@id="1"]/text()')
+# print(li_list)
+
+# 查找到id为1的li标签的class的属性值
+# li_list = tree.xpath('//ul/li[@id="1"]/@class')
+# print(li_list)
+
+# 查询id中包含i的li标签
+#li_list = tree.xpath('//ul/li[contains(@id, "i")]/text()')
+#print(li_list)
+
+# 查询id的值以i开头的li标签
+# li_list = tree.xpath('//ul/li[starts-with(@id, "i")]/text()')
+# print(li_list)
+
+# 查询id为1 和 class 为 c1 的 li 标签
+# li_list = tree.xpath('//ul/li[@id="1" and @class="c1"]/text()')
+# print(li_list)
+
+li_list = tree.xpath('//ul/li[@id="1"]/text() | //ul/li[@id="2"]/text()')
+print(li_list)
