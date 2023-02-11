@@ -46,52 +46,71 @@
   	//title | // price
   ```
 
-  ```python
-  # xpath的基本使用
-  from lxml import etree
-  
-  # xpath 解析本地文件
-  tree = etree.parse('03xpath解析本地文件.html')
-  
-  # 查找 ul 下的 li
-  # li_list = tree.xpath('//body/ul/li')
-  # print(len(li_list))
-  
-  # 查找所有有id属性的li标签
-  # li_list = tree.xpath("//ul/li[@id]")
-  # print(li_list)
-  # print(len(li_list))
-  
-  # 查找所有有id属性的li标签中的内容
-  # text() 获取标签中的内容
-  # li_list = tree.xpath("//ul/li[@id]/text()")
-  # print(li_list)
-  
-  # 找到id为1的li标签
-  # li_list = tree.xpath('//ul/li[@id="1"]/text()')
-  # print(li_list)
-  
-  # 查找到id为1的li标签的class的属性值
-  # li_list = tree.xpath('//ul/li[@id="1"]/@class')
-  # print(li_list)
-  
-  # 查询id中包含i的li标签
-  #li_list = tree.xpath('//ul/li[contains(@id, "i")]/text()')
-  #print(li_list)
-  
-  # 查询id的值以i开头的li标签
-  # li_list = tree.xpath('//ul/li[starts-with(@id, "i")]/text()')
-  # print(li_list)
-  
-  # 查询id为1 和 class 为 c1 的 li 标签
-  # li_list = tree.xpath('//ul/li[@id="1" and @class="c1"]/text()')
-  # print(li_list)
-  
-  li_list = tree.xpath('//ul/li[@id="1"]/text() | //ul/li[@id="2"]/text()')
-  print(li_list)
-  ```
+## 1. 解析本地文件
 
-  
+```python
+# xpath的基本使用
+from lxml import etree
 
-  
+# xpath 解析本地文件
+tree = etree.parse('03xpath解析本地文件.html') # 解析本地文件
+
+# 查找 ul 下的 li
+# li_list = tree.xpath('//body/ul/li')
+# print(len(li_list))
+
+# 查找所有有id属性的li标签
+# li_list = tree.xpath("//ul/li[@id]")
+# print(li_list)
+# print(len(li_list))
+
+# 查找所有有id属性的li标签中的内容
+# text() 获取标签中的内容
+# li_list = tree.xpath("//ul/li[@id]/text()")
+# print(li_list)
+
+# 找到id为1的li标签
+# li_list = tree.xpath('//ul/li[@id="1"]/text()')
+# print(li_list)
+
+# 查找到id为1的li标签的class的属性值
+# li_list = tree.xpath('//ul/li[@id="1"]/@class')
+# print(li_list)
+
+# 查询id中包含i的li标签
+#li_list = tree.xpath('//ul/li[contains(@id, "i")]/text()')
+#print(li_list)
+
+# 查询id的值以i开头的li标签
+# li_list = tree.xpath('//ul/li[starts-with(@id, "i")]/text()')
+# print(li_list)
+
+# 查询id为1 和 class 为 c1 的 li 标签
+# li_list = tree.xpath('//ul/li[@id="1" and @class="c1"]/text()')
+# print(li_list)
+
+li_list = tree.xpath('//ul/li[@id="1"]/text() | //ul/li[@id="2"]/text()')
+print(li_list)
+```
+
+## 2. 解析网页源码
+
+```python
+# xpath的基本使用-解析网页源码-获取“百度一下”四个字
+from lxml import etree
+import urllib.request
+url="http://www.baidu.com"
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+}
+
+# 请求对象的定制
+request = urllib.request.Request(url=url, headers= headers)
+response = urllib.request.urlopen(request)
+content = response.read().decode('utf-8')
+
+tree = etree.HTML(content)  # 解析网页源码
+result = tree.xpath('//input[@id="su"]/@value')
+print(result)
+```
 
