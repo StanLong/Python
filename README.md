@@ -7,6 +7,4 @@ Python从入门到放弃
 
 
 
-快代理
-
-https://www.kuaidaili.com/free/
+快代理  https://www.kuaidaili.com/free/
