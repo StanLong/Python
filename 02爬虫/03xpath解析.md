@@ -165,5 +165,3 @@ if __name__ == '__main__':
         down_load(content)
 ```
 
-# 二、JsonPath
-

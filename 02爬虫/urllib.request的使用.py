@@ -1,47 +1,42 @@
-# 使用xpath解析站长之家下载前十页的图片
+import json
+import jsonpath
 
-import urllib.request
-from lxml import etree
+# 导入json文件
+obj = json.load(open('04JsonPath解析.json', 'r', encoding='utf-8'))
 
-def create_request(page):
-    if page == 1:
-        url = 'https://sc.chinaz.com/tupian/qinglvtupian.html'
-    else:
-        url = 'https://sc.chinaz.com/tupian/qinglvtupian_' + str(page) + '.html'
 
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
-    }
+# 书店所有书的作者
+# auth_list = jsonpath.jsonpath(obj, '$.store.book[*].author')
 
-    request = urllib.request.Request(url = url, headers= headers)
-    return request
+# 所有的作者
+# auth_list = jsonpath.jsonpath(obj, '$..author')
 
-def get_content(request):
-    response = urllib.request.urlopen(request)
-    content = response.read().decode('utf-8')
-    return content
+# store 下面所有的元素
+# tag_list = jsonpath.jsonpath(obj, '$.store.*')
 
-def down_load(content):
-    tree = etree.HTML(content)
-    # 一般涉及到图片的网站都会涉及懒加载
-    name_list = tree.xpath('//div[@class="item"]/img/@alt')
-    src_list = tree.xpath('//div[@class="item"]/img/@data-original')
+#store 里面所有的 price
+# price_list = jsonpath.jsonpath(obj, '$.store..price')
 
-    for i in range(len(name_list)):
-        name = name_list[i]
-        src = src_list[i]
-        url = 'https:' + src
-        print(name, url)
-        urllib.request.urlretrieve(url=url, filename='./tupian/' + name + '.jpg')
+# 第三本书
+# book = jsonpath.jsonpath(obj, '$..book[2]')
 
-if __name__ == '__main__':
-    start_page = int(input('请输入起始页码'))
-    end_page = int(input('请输入结束页码'))
+# 最后一本书
+# book = jsonpath.jsonpath(obj, '$..book[(@.length-1)]')
 
-    for page in range(start_page, end_page+1):
-        # 请求对象的定制
-        request = create_request(page)
-        # 获取网页源码
-        content = get_content(request)
-        # 下载图片
-        down_load(content)
+# 前两本书
+# book_list = jsonpath.jsonpath(obj, '$..book[0,1]')
+# 或者用切片的方式
+# book_list = jsonpath.jsonpath(obj, '$..book[:2]')
+
+# 过滤出包含所有版本号的书
+# book_list = jsonpath.jsonpath(obj, '$..book[?(@.isbn)]')
+
+# 超过10块钱的书
+book_list = jsonpath.jsonpath(obj, '$..book[?(@.price > 10)]')
+print(book_list)
+
+
+
+
+
+
