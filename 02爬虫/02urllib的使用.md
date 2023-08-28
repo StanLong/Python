@@ -74,7 +74,7 @@ import urllib.request
 
 # 下载网页
 # url_page = 'http://www.baidu.com'
-# urllib.request.urlretrieve(url_page, 'baidu.html') # 参数是是下载路径，参数2是给下载的文件起个名字
+# urllib.request.urlretrieve(url_page, 'baidu.html') # 参数1是下载路径，参数2是给下载的文件起个名字
 
 # 下载图片
 # url_img = 'https://nimg.ws.126.net/?url=https://dingyue.ws.126.net/2021/0329/8ad4eca3j00qqq7cr0064c000u000tim.jpg&thumbnail=650x2147483647&quality=80&type=jpg'
@@ -95,7 +95,7 @@ UA介绍：User Agent中文名为用户代理，简称 UA，它是一个特殊�
 # urllib基本使用 - 请求对象的定制
 import urllib.request
 
-url_page = 'https://www.baidu.com'
+url_page = 'https://www.baidu.com' # 注意这里是 https 协议
 
 # 伪造 headers
 headers = {

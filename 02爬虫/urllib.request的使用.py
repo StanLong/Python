@@ -1,42 +1,15 @@
-import json
-import jsonpath
+# urllib基本使用-获取百度页面源码
+import urllib.request
 
-# 导入json文件
-obj = json.load(open('04JsonPath解析.json', 'r', encoding='utf-8'))
+# 1. 定义一个url, 就是要访问的地址
+url = "http://www.baidu.com"
 
+# 2. 模拟浏览器向服务器发送请求并接收响应
+response = urllib.request.urlopen(url)
 
-# 书店所有书的作者
-# auth_list = jsonpath.jsonpath(obj, '$.store.book[*].author')
+# 3. 获取响应页面中的源码
+# read() 返回的是字节形式的二进制数据，需要将二进制的数据转换为字符串，即解码 decode('编码格式')
+content = response.read().decode('utf-8')
 
-# 所有的作者
-# auth_list = jsonpath.jsonpath(obj, '$..author')
-
-# store 下面所有的元素
-# tag_list = jsonpath.jsonpath(obj, '$.store.*')
-
-#store 里面所有的 price
-# price_list = jsonpath.jsonpath(obj, '$.store..price')
-
-# 第三本书
-# book = jsonpath.jsonpath(obj, '$..book[2]')
-
-# 最后一本书
-# book = jsonpath.jsonpath(obj, '$..book[(@.length-1)]')
-
-# 前两本书
-# book_list = jsonpath.jsonpath(obj, '$..book[0,1]')
-# 或者用切片的方式
-# book_list = jsonpath.jsonpath(obj, '$..book[:2]')
-
-# 过滤出包含所有版本号的书
-# book_list = jsonpath.jsonpath(obj, '$..book[?(@.isbn)]')
-
-# 超过10块钱的书
-book_list = jsonpath.jsonpath(obj, '$..book[?(@.price > 10)]')
-print(book_list)
-
-
-
-
-
-
+# 4. 打印结果
+print(content)
